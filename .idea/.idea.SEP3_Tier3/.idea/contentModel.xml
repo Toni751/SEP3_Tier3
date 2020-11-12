@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\Toni\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Toni\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_SEP3_Tier3.-813661989.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Toni\AppData\Roaming\JetBrains\Rider2020.2\consoles\db" t="IncludeRecursive" />
+    <e p="C:\Users\Toni\AppData\Roaming\JetBrains\Rider2020.2\extensions" t="IncludeRecursive" />
+    <e p="C:\Users\Toni\RiderProjects\SEP3_Tier3" t="IncludeRecursive">
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="Models" t="Include">
+        <e p="Address.cs" t="Include" />
+        <e p="Administrator.cs" t="Include" />
+        <e p="Comment.cs" t="Include" />
+        <e p="LoginCredentials.cs" t="Include" />
+        <e p="PageOwner.cs" t="Include" />
+        <e p="Post.cs" t="Include" />
+        <e p="RegularUser.cs" t="Include" />
+        <e p="UserShortVersion.cs" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netcoreapp3.1" t="Include">
+            <e p="SEP3_Tier3.AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Persistance" t="Include">
+        <e p="ShapeAppDbContext.cs" t="Include" />
+      </e>
+      <e p="Program.cs" t="Include" />
+      <e p="Repositories" t="Include">
+        <e p="Implementation" t="Include">
+          <e p="UserRepo.cs" t="Include" />
+        </e>
+        <e p="IUserRepo.cs" t="Include" />
+      </e>
+      <e p="SEP3_Tier3.csproj" t="IncludeRecursive" />
+      <e p="SEP3_Tier3.sln" t="IncludeFlat" />
+      <e p="ServerSocket.cs" t="Include" />
+      <e p="SocketControllers" t="Include">
+        <e p="Implementation" t="Include">
+          <e p="UserSocket.cs" t="Include" />
+        </e>
+        <e p="IUserSocket.cs" t="Include" />
+      </e>
+    </e>
+  </component>
+</project>
