@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using SEP3_T3.Models;
+using SEP3_Tier3.Models;
 
-namespace SEP3_T3.Repositories
+namespace SEP3_Tier3.Repositories
 {
     public interface IUserRepo
     {
-        Task AddUserAsync(RegularUser user);
+        Task<bool> AddUserAsync(UserSocketsModel user);
         Task<UserShortVersion> LoginAsync(string email, string password);
         Task<List<Post>> GetLatestPostsForUserAsync(int id, int offset);
-        Task<RegularUser> GetUserByIdAsync(int id);
+        Task<User> GetUserByIdAsync(int id);
     }
 }

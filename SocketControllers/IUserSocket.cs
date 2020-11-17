@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SEP3_T3.Models;
+using SEP3_Tier3.Models;
 
-namespace SEP3_T3.SocketControllers
+
+namespace SEP3_Tier3.SocketControllers
 {
     public interface IUserSocket
     {
-        Task AddUserAsync(RegularUser user);
-        Task<UserShortVersion> LoginAsync(string email, string password);
-        Task<List<Post>> GetLatestPostsForUserAsync(int id, int offset);
-        Task<RegularUser> GetUserByIdAsync(int id);
+        Task<Request> HandleClientRequest(Request request);
+        Task<Request> AddUserAsync(Request request);
+        Task<Request> LoginAsync(Request request);
+        Task<List<Post>> GetLatestPostsForUserAsync(Request request);
+        Task<User> GetUserByIdAsync(Request request);
     }
 }

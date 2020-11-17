@@ -1,11 +1,13 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SEP3_T3.Models
+namespace SEP3_Tier3.Models
 {
     public class Comment
     {
+        public int Id { get; set; }
+        
         [JsonPropertyName("owner")]
-        public UserShortVersion Owner { get; set; }
+        public User Owner { get; set; }
         
         [JsonPropertyName("content")]
         public string Content { get; set; }

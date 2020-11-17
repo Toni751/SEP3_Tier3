@@ -7,15 +7,43 @@
     <e p="C:\Users\Toni\AppData\Roaming\JetBrains\Rider2020.2\extensions" t="IncludeRecursive" />
     <e p="C:\Users\Toni\RiderProjects\SEP3_Tier3" t="IncludeRecursive">
       <e p="bin" t="ExcludeRecursive" />
+      <e p="Migrations" t="Include">
+        <e p="20201116193242_InitialCreate.cs" t="Include" />
+        <e p="20201116193242_InitialCreate.Designer.cs" t="Include" />
+        <e p="20201116194725_UpdatedUserAndMessage.cs" t="Include" />
+        <e p="20201116194725_UpdatedUserAndMessage.Designer.cs" t="Include" />
+        <e p="20201116194852_ChangedMessagesPK.cs" t="Include" />
+        <e p="20201116194852_ChangedMessagesPK.Designer.cs" t="Include" />
+        <e p="20201116195034_RemovedMessages.cs" t="Include" />
+        <e p="20201116195034_RemovedMessages.Designer.cs" t="Include" />
+        <e p="20201116195120_ReAddedMessages.cs" t="Include" />
+        <e p="20201116195120_ReAddedMessages.Designer.cs" t="Include" />
+        <e p="20201117134411_DefaultValueForUserScore.cs" t="Include" />
+        <e p="20201117134411_DefaultValueForUserScore.Designer.cs" t="Include" />
+        <e p="ShapeAppDbContextModelSnapshot.cs" t="Include" />
+      </e>
       <e p="Models" t="Include">
+        <e p="ActionType.cs" t="Include" />
         <e p="Address.cs" t="Include" />
         <e p="Administrator.cs" t="Include" />
         <e p="Comment.cs" t="Include" />
+        <e p="Diet.cs" t="Include" />
+        <e p="DietMeal.cs" t="Include" />
+        <e p="Exercise.cs" t="Include" />
+        <e p="Friendship.cs" t="Include" />
         <e p="LoginCredentials.cs" t="Include" />
-        <e p="PageOwner.cs" t="Include" />
+        <e p="Meal.cs" t="Include" />
+        <e p="Message.cs" t="Include" />
+        <e p="PageRating.cs" t="Include" />
         <e p="Post.cs" t="Include" />
-        <e p="RegularUser.cs" t="Include" />
+        <e p="PostAction.cs" t="Include" />
+        <e p="Request.cs" t="Include" />
+        <e p="Training.cs" t="Include" />
+        <e p="TrainingExercise.cs" t="Include" />
+        <e p="User.cs" t="Include" />
+        <e p="UserAction.cs" t="Include" />
         <e p="UserShortVersion.cs" t="Include" />
+        <e p="UserSocketsModel.cs" t="Include" />
       </e>
       <e p="obj" t="ExcludeRecursive">
         <e p="Debug" t="Include">
@@ -33,6 +61,7 @@
         <e p="Implementation" t="Include">
           <e p="UserRepo.cs" t="Include" />
         </e>
+        <e p="IPostRepo.cs" t="Include" />
         <e p="IUserRepo.cs" t="Include" />
       </e>
       <e p="SEP3_Tier3.csproj" t="IncludeRecursive" />

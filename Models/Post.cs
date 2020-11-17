@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SEP3_T3.Models
+namespace SEP3_Tier3.Models
 {
     public class Post //add owner I think
     {
@@ -16,10 +16,10 @@ namespace SEP3_T3.Models
         public string Content { get; set;}
         
         [JsonPropertyName("owner")]
-        public UserShortVersion Owner { get; set;}
+        public User Owner { get; set;}
         
-        [JsonPropertyName("picture")]
-        public byte[] Picture { get; set; }
+        // [JsonPropertyName("picture")]
+        // public byte[] Picture { get; set; }
         
         [JsonPropertyName("timeStamp")]
         public DateTime TimeStamp { get; set;}
@@ -27,7 +27,7 @@ namespace SEP3_T3.Models
         [JsonPropertyName("comments")]
         public List<Comment> Comments { get; set;}
         
-        [JsonPropertyName("userIdsForLikes")]
-        public List<int> UserIdsForLikes{ get; set;}
+        // [JsonPropertyName("userIdsForLikes")]
+        // public List<int> UserIdsForLikes{ get; set;}
     }
 }
