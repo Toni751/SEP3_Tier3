@@ -25,6 +25,8 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return await AddUserAsync(request);
                 case "USER_LOGIN":
                     return await LoginAsync(request);
+                case "USER_GET_BY_ID":
+                    return await GetUserByIdAsync(request);
                 default:
                     return null;
             }
@@ -43,7 +45,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
-        public async Task<Request> LoginAsync(Request request)
+        private async Task<Request> LoginAsync(Request request)
         {
             string credentialsAsJson = request.Argument.ToString();
             LoginCredentials loginCredentials = JsonSerializer.Deserialize<LoginCredentials>(credentialsAsJson);
@@ -55,14 +57,21 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
-        public Task<List<Post>> GetLatestPostsForUserAsync(Request request)
+        private async Task<List<Post>> GetLatestPostsForUserAsync(Request request)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<User> GetUserByIdAsync(Request request)
+        private async Task<Request> GetUserByIdAsync(Request request)
         {
-            throw new System.NotImplementedException();
+            int userId = Convert.ToInt32(request.Argument.ToString());
+            Console.WriteLine("Retrieving user with id " + userId);
+            User user = await userRepo.GetUserByIdAsync(userId);
+            return new Request
+            {
+                ActionType = ActionType.USER_GET_BY_ID.ToString(),
+                Argument = JsonSerializer.Serialize(user)
+            };
         }
     }
 }

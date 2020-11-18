@@ -50,7 +50,7 @@ namespace SEP3_Tier3
             Console.WriteLine("Request deserialized " + readFromClient.ActionType + readFromClient.Argument);
 
             Request requestResponse;
-            if (readFromClient.ActionType.ToString().Contains("USER"))
+            if (readFromClient.ActionType.Contains("USER"))
                 requestResponse = await userSocket.HandleClientRequest(readFromClient);
             else
                 requestResponse = null;
@@ -75,12 +75,12 @@ namespace SEP3_Tier3
             //     Argument = JsonSerializer.Serialize(user)
             // };
 
-            //string requestResponseAsJson = JsonSerializer.Serialize(requestResponse);
+            string requestResponseAsJson = JsonSerializer.Serialize(requestResponse);
             
-            //Console.WriteLine("Sending back to client response: " + requestResponseAsJson);
-            //byte[] dataToClient = Encoding.ASCII.GetBytes(requestResponseAsJson);
+            Console.WriteLine("Sending back to client response: " + requestResponseAsJson);
+            byte[] dataToClient = Encoding.ASCII.GetBytes(requestResponseAsJson);
 
-            byte[] dataToClient = File.ReadAllBytes("C:/Users/Przemo/RiderProjects/SEP3_Tier3/Images/Avatars/0.png");
+            //byte[] dataToClient = File.ReadAllBytes("C:/Users/Przemo/RiderProjects/SEP3_Tier3/Images/Avatars/0.png");
             stream.Write(dataToClient, 0, dataToClient.Length);
 
             client.Close();

@@ -8,9 +8,9 @@ namespace SEP3_Tier3.SocketControllers
     public interface IUserSocket
     {
         Task<Request> HandleClientRequest(Request request);
-        Task<Request> AddUserAsync(Request request);
-        Task<Request> LoginAsync(Request request);
-        Task<List<Post>> GetLatestPostsForUserAsync(Request request);
-        Task<User> GetUserByIdAsync(Request request);
+        // Task<Request> AddUserAsync(Request request);
+        // Task<Request> LoginAsync(Request request);
+        // Task<List<Post>> GetLatestPostsForUserAsync(Request request);
+        // Task<User> GetUserByIdAsync(Request request);
     }
 }
