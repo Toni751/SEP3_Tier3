@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SEP3_T3.Persistance;
@@ -38,11 +41,16 @@ namespace SEP3_Tier3.Repositories.Implementation
                 {
                     string accountType = user.Address != null ? "PageOwner" : "RegularUser";
 
+                    byte[] avatar = File.ReadAllBytes("C:/Users/Przemo/RiderProjects/SEP3_Tier3/Images/Avatars/"+user.Id+".png");
+
+                    Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + avatar.Length);
+                    
                     return new UserShortVersion
                     {
                         UserId = user.Id,
                         UserFullName = user.Name,
-                        AccountType = accountType
+                        AccountType = accountType,
+                        Avatar = avatar
                     };
                 }
 

@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\Przemo\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Przemo\\.nuget\\packages"
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -41,7 +42,7 @@ namespace SEP3_Tier3
         {
             NetworkStream stream = client.GetStream();
 
-            byte[] dataFromClient = new byte[1024];
+            byte[] dataFromClient = new byte[1024 * 1024 * 10];
             int bytesRead = stream.Read(dataFromClient, 0, dataFromClient.Length);
             Console.WriteLine("Bytes read length " + bytesRead);
             string readFromClientAsJson = Encoding.ASCII.GetString(dataFromClient, 0, bytesRead);
@@ -74,9 +75,12 @@ namespace SEP3_Tier3
             //     Argument = JsonSerializer.Serialize(user)
             // };
 
-            string requestResponseAsJson = JsonSerializer.Serialize(requestResponse);
-            Console.WriteLine("Sending back to client response: " + requestResponseAsJson);
-            byte[] dataToClient = Encoding.ASCII.GetBytes(requestResponseAsJson);
+            //string requestResponseAsJson = JsonSerializer.Serialize(requestResponse);
+            
+            //Console.WriteLine("Sending back to client response: " + requestResponseAsJson);
+            //byte[] dataToClient = Encoding.ASCII.GetBytes(requestResponseAsJson);
+
+            byte[] dataToClient = File.ReadAllBytes("C:/Users/Przemo/RiderProjects/SEP3_Tier3/Images/Avatars/0.png");
             stream.Write(dataToClient, 0, dataToClient.Length);
 
             client.Close();

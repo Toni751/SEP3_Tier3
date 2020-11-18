@@ -27,5 +27,13 @@ namespace SEP3_Tier3.Models
         
         [JsonPropertyName("address")]
         public Address Address { get; set; }
+        
+        [JsonPropertyName("avatar")]
+        public byte[] Avatar { get; set; }
+        
+        [JsonPropertyName("background")]
+        public byte[] Background { get; set; }
+        
+        
     }
 }
