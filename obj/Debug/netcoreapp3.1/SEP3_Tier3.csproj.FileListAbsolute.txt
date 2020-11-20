@@ -54,3 +54,8 @@ C:\Users\Toni\RiderProjects\SEP3_Tier3\obj\Debug\netcoreapp3.1\SEP3_Tier3.csproj
 C:\Users\Toni\RiderProjects\SEP3_Tier3\obj\Debug\netcoreapp3.1\SEP3_Tier3.dll
 C:\Users\Toni\RiderProjects\SEP3_Tier3\obj\Debug\netcoreapp3.1\SEP3_Tier3.pdb
 C:\Users\Toni\RiderProjects\SEP3_Tier3\obj\Debug\netcoreapp3.1\SEP3_Tier3.genruntimeconfig.cache
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\SkiaSharp.dll
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\runtimes\osx\native\libSkiaSharp.dylib
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\libSkiaSharp.dll
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\libSkiaSharp.dll
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\libSkiaSharp.dll

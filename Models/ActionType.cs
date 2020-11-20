@@ -7,6 +7,8 @@ namespace SEP3_Tier3.Models
     {
         USER_LOGIN,
         USER_REGISTER,
-        USER_GET_BY_ID
+        USER_GET_BY_ID,
+        USER_EDIT,
+        HAS_IMAGES
     }
 }

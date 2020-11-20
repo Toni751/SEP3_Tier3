@@ -11,11 +11,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.20" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Images\Messages" />
-      <Folder Include="Images\Posts" />
+      <PackageReference Include="SkiaSharp" Version="2.80.2" />
     </ItemGroup>
 
 </Project>

@@ -50,6 +50,10 @@
             "MySql.Data.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.20, )"
+            },
+            "SkiaSharp": {
+              "target": "Package",
+              "version": "[2.80.2, )"
             }
           },
           "imports": [

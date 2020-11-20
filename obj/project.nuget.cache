@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "gHFpJNfjyfkkiaAJUke/XsNpSaRQ1hCOdr8WwG0W3cP3u6bDtNVxrCLw9RL+MXkD6fwV5F5HSuCcln9QzWYXeQ==",
+  "dgSpecHash": "fm0wmtRP0SFMeWbk1glE8PIBvKMa//7ss3rwstQtMAHZQn0evdyMZO3Lv22kpvikFOi+/fMYMHkfDJzO7+d9TQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Toni\\RiderProjects\\SEP3_Tier3\\SEP3_Tier3.csproj",
   "expectedPackageFiles": [
@@ -51,6 +51,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.ubuntu.14.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.ubuntu.16.04-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
+    "C:\\Users\\Toni\\.nuget\\packages\\skiasharp\\2.80.2\\skiasharp.2.80.2.nupkg.sha512",
     "C:\\Users\\Toni\\.nuget\\packages\\ssh.net\\2016.1.0\\ssh.net.2016.1.0.nupkg.sha512",
     "C:\\Users\\Toni\\.nuget\\packages\\sshnet.security.cryptography\\1.2.0\\sshnet.security.cryptography.1.2.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.appcontext\\4.3.0\\system.appcontext.4.3.0.nupkg.sha512",

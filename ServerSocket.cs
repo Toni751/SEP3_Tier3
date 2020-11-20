@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -14,6 +16,7 @@ namespace SEP3_Tier3
     public class ServerSocket
     {
         private IUserSocket userSocket;
+
         public ServerSocket(IUserSocket userSocket)
         {
             this.userSocket = userSocket;
@@ -42,41 +45,82 @@ namespace SEP3_Tier3
         {
             NetworkStream stream = client.GetStream();
 
-            byte[] dataFromClient = new byte[1024 * 1024 * 10];
+            byte[] dataFromClient = new byte[65535];
             int bytesRead = stream.Read(dataFromClient, 0, dataFromClient.Length);
             Console.WriteLine("Bytes read length " + bytesRead);
             string readFromClientAsJson = Encoding.ASCII.GetString(dataFromClient, 0, bytesRead);
             Request readFromClient = JsonSerializer.Deserialize<Request>(readFromClientAsJson);
             Console.WriteLine("Request deserialized " + readFromClient.ActionType + readFromClient.Argument);
 
-            Request requestResponse;
-            if (readFromClient.ActionType.Contains("USER"))
-                requestResponse = await userSocket.HandleClientRequest(readFromClient);
+            ActualRequest actualRequest;
+            if (readFromClient.ActionType.Equals(ActionType.HAS_IMAGES.ToString()))
+            {
+                List<int> incomingImageSizes = (List<int>) readFromClient.Argument;
+                List<byte[]> incomingImages = new List<byte[]>();
+
+                foreach (var imageSize in incomingImageSizes)
+                {
+                    byte[] temp = new byte[imageSize];
+                    int imageBytesRead = stream.Read(temp, 0, temp.Length);
+                    Console.WriteLine("Image bytes read length " + imageBytesRead);
+                    incomingImages.Add(temp);
+                }
+
+                dataFromClient = new byte[65535];
+                bytesRead = stream.Read(dataFromClient, 0, dataFromClient.Length);
+                Console.WriteLine("Bytes read length " + bytesRead);
+                readFromClientAsJson = Encoding.ASCII.GetString(dataFromClient, 0, bytesRead);
+                readFromClient = JsonSerializer.Deserialize<Request>(readFromClientAsJson);
+                Console.WriteLine("Request deserialized " + readFromClient.ActionType + readFromClient.Argument);
+                actualRequest = new ActualRequest
+                {
+                    Images = incomingImages,
+                    Request = readFromClient
+                };
+            }
+            else
+            {
+                actualRequest = new ActualRequest
+                {
+                    Images = null,
+                    Request = readFromClient
+                };
+            }
+
+            ActualRequest requestResponse;
+            if (actualRequest.Request.ActionType.StartsWith("USER"))
+                requestResponse = await userSocket.HandleClientRequest(actualRequest);
             else
                 requestResponse = null;
-            // string receivedUserAsJson = readFromClient.Argument.ToString();
-            // Console.WriteLine("User as json " + receivedUserAsJson);
-            // User deserializedUserFromClient = JsonSerializer.Deserialize<User>(receivedUserAsJson);
-            // Console.WriteLine("Des user " + deserializedUserFromClient);
 
-            // if (readFromClient.GetType().ToString().Equals("exit"))
-            //     break;
+            Request request = requestResponse.Request;
+            List<byte[]> responseImages = requestResponse.Images;
 
-            // Message sendToClient = new Message
-            // {
-            //     Id = readFromClient.Id,
-            //     Content = readFromClient.Content.ToUpper()
-            // };
-            //Thread.Sleep(3000);
-            // user.Username += count++;
-            // Request request1 = new Request
-            // {
-            //     ActionType = ActionType.SEND_MESSAGE.ToString(),
-            //     Argument = JsonSerializer.Serialize(user)
-            // };
+            if (responseImages != null && responseImages.Any())
+            {
+                Console.WriteLine("Sending images " + responseImages.Count);
+                List<int> imageSizes = new List<int>();
+                
+                foreach (var image in responseImages) {
+                    imageSizes.Add(image.Length);
+                }
+                
+                Request requestForImages = new Request{
+                    ActionType = ActionType.HAS_IMAGES.ToString(), 
+                    Argument = imageSizes
+                };
+                string requestForImagesAsJson = JsonSerializer.Serialize(requestForImages);
+                Console.WriteLine("Sending back to client response: " + requestForImagesAsJson);
+                byte[] dataForImages = Encoding.ASCII.GetBytes(requestForImagesAsJson);
+                stream.Write(dataForImages, 0, dataForImages.Length);
+                
+                foreach (var image in responseImages) {
+                   stream.Write(image, 0, image.Length);
+                }
+            }
 
-            string requestResponseAsJson = JsonSerializer.Serialize(requestResponse);
-            
+            string requestResponseAsJson = JsonSerializer.Serialize(request);
+
             Console.WriteLine("Sending back to client response: " + requestResponseAsJson);
             byte[] dataToClient = Encoding.ASCII.GetBytes(requestResponseAsJson);
 

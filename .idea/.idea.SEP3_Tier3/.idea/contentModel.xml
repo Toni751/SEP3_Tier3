@@ -7,16 +7,6 @@
     <e p="C:\Users\Toni\AppData\Roaming\JetBrains\Rider2020.2\extensions" t="IncludeRecursive" />
     <e p="C:\Users\Toni\RiderProjects\SEP3_Tier3" t="IncludeRecursive">
       <e p="bin" t="ExcludeRecursive" />
-      <e p="Images" t="Include">
-        <e p="Avatars" t="Include">
-          <e p="0.png" t="Include" />
-        </e>
-        <e p="Backgrounds" t="Include">
-          <e p="0.jpg" t="Include" />
-        </e>
-        <e p="Messages" t="Include" />
-        <e p="Posts" t="Include" />
-      </e>
       <e p="Migrations" t="Include">
         <e p="20201116193242_InitialCreate.cs" t="Include" />
         <e p="20201116193242_InitialCreate.Designer.cs" t="Include" />
@@ -34,6 +24,7 @@
       </e>
       <e p="Models" t="Include">
         <e p="ActionType.cs" t="Include" />
+        <e p="ActualRequest.cs" t="Include" />
         <e p="Address.cs" t="Include" />
         <e p="Administrator.cs" t="Include" />
         <e p="Comment.cs" t="Include" />
