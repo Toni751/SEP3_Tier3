@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using SEP3_Tier3.Core;
 using SEP3_Tier3.Models;
 using SEP3_Tier3.Repositories;
 using SEP3_Tier3.SocketControllers;
@@ -15,11 +16,11 @@ namespace SEP3_Tier3
 {
     public class ServerSocket
     {
-        private IUserSocket userSocket;
+        private SocketControllerFactory socketFactory;
 
-        public ServerSocket(IUserSocket userSocket)
+        public ServerSocket(SocketControllerFactory socketFactory)
         {
-            this.userSocket = userSocket;
+            this.socketFactory = socketFactory;
         }
 
         public void Start()
@@ -89,7 +90,9 @@ namespace SEP3_Tier3
 
             ActualRequest requestResponse;
             if (actualRequest.Request.ActionType.StartsWith("USER"))
-                requestResponse = await userSocket.HandleClientRequest(actualRequest);
+                requestResponse = await socketFactory.UserSocketController().HandleClientRequest(actualRequest);
+            else if (actualRequest.Request.ActionType.StartsWith("ADMIN"))
+                requestResponse = await socketFactory.AdminSocketController().HandleClientRequest(actualRequest);
             else
                 requestResponse = null;
 

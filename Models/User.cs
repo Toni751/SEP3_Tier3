@@ -21,7 +21,6 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("description")]
         public string Description { get; set; }
         
-        
         //you access a user's (or page's) posts only when you go to his/her profile (same applies if it is your own)
         //so it would make more sense to have a list of posts I think 
         //ALSO DON'T FORGET ABOUT LIMIT

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Security.Permissions;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SEP3_Tier3.Models;
@@ -12,11 +14,12 @@ namespace SEP3_Tier3.SocketControllers.Implementation
     public class UserSocket : IUserSocket
     {
         private IUserRepo userRepo;
-        private const string FILE_PATH = "C:/Users/Toni/RiderProjects/Images";
+        private readonly string FILE_PATH;
 
         public UserSocket(IUserRepo userRepo)
         {
             this.userRepo = userRepo;
+            FILE_PATH = ImagesUtil.FILE_PATH;
         }
 
         public async Task<ActualRequest> HandleClientRequest(ActualRequest actualRequest)
@@ -29,9 +32,64 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return await LoginAsync(actualRequest);
                 case "USER_GET_BY_ID":
                     return await GetUserByIdAsync(actualRequest);
+                case "USER_EDIT":
+                    return await UpdateUserAsync(actualRequest);
+                case "USER_DELETE":
+                    return await DeleteUserAsync(actualRequest);
+                case "USER_FRIEND_REQUEST_SEND":
+                case "USER_FRIEND_REQUEST_RESPONSE":
+                case "USER_FRIEND_REMOVE":
+                case "USER_SHARE_TRAININGS":
+                case "USER_SHARE_DIETS":
+                case "USER_FOLLOW_PAGE":
+                case "USER_RATE_PAGE":
+                    return await PostUserAction(actualRequest);
                 default:
                     return null;
             }
+        }
+
+        private async Task<ActualRequest> PostUserAction(ActualRequest actualRequest)
+        {
+            Request request = actualRequest.Request;
+            UserActionSockets userActionSockets =
+                JsonSerializer.Deserialize<UserActionSockets>(request.Argument.ToString());
+            Console.WriteLine("Posting user action " + userActionSockets.ActionType);
+            bool response;
+            if (userActionSockets.ActionType.Equals("USER_FRIEND_REMOVE"))
+                response = await userRepo.RemoveFriendshipAsync(userActionSockets);
+            else if (userActionSockets.ActionType.Equals("USER_RATE_PAGE"))
+                response = await userRepo.PostPageRatingAsync(userActionSockets);
+            else
+                response = await userRepo.PostUserActionAsync(userActionSockets);
+            Request responseRequest = new Request
+            {
+                ActionType = userActionSockets.ActionType,
+                Argument = JsonSerializer.Serialize(response)
+            };
+            return new ActualRequest
+            {
+                Request = responseRequest,
+                Images = null
+            };
+        }
+
+        private async Task<ActualRequest> DeleteUserAsync(ActualRequest actualRequest)
+        {
+            Request request = actualRequest.Request;
+            int userId = Convert.ToInt32(request.Argument.ToString());
+            Console.WriteLine("Deleting user with id " + userId);
+            bool response = await userRepo.DeleteUserAsync(userId);
+            Request responseRequest = new Request
+            {
+                ActionType = ActionType.USER_DELETE.ToString(),
+                Argument = JsonSerializer.Serialize(response)
+            };
+            return new ActualRequest
+            {
+                Request = responseRequest,
+                Images = null
+            };
         }
 
         private async Task<ActualRequest> AddUserAsync(ActualRequest actualRequest)
@@ -40,12 +98,26 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             string userAsJson = request.Argument.ToString();
             UserSocketsModel user = JsonSerializer.Deserialize<UserSocketsModel>(userAsJson);
             Console.WriteLine("Server got register user " + JsonSerializer.Serialize(user));
-            bool result = await userRepo.AddUserAsync(user);
+            int result = await userRepo.AddUserAsync(user);
+            bool resultBool = result >= 0;
             Request requestResponse = new Request
             {
                 ActionType = ActionType.USER_REGISTER.ToString(),
-                Argument = JsonSerializer.Serialize(result)
+                Argument = JsonSerializer.Serialize(resultBool)
             };
+            if (result >= 0)
+            {
+                try
+                {
+                    byte[] readDefaultAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/defaultAvatar.jpg");
+                    ImagesUtil.WriteImageToPath(readDefaultAvatar, $"{FILE_PATH}/Users/{result}/avatar.jpg");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Default avatar not found");
+                }
+            }
+
             return new ActualRequest
             {
                 Request = requestResponse,
@@ -67,14 +139,14 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
             byte[] readFile;
             List<byte[]> images = new List<byte[]>();
-            try
-            {
-                readFile = File.ReadAllBytes($"{FILE_PATH}/Avatar/{loginResult.UserId}.png");
-                images.Add(readFile);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("No avatar found for user " + loginResult.UserId);
+            if (!loginResult.AccountType.Equals("Administrator")) {
+                try {
+                    readFile = File.ReadAllBytes($"{FILE_PATH}/Users/{loginResult.UserId}/avatar.jpg");
+                    images.Add(readFile);
+                }
+                catch (Exception e) {
+                    Console.WriteLine("No avatar found for user " + loginResult.UserId);
+                }
             }
 
             return new ActualRequest
@@ -92,24 +164,23 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         private async Task<ActualRequest> GetUserByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
-            int userId = Convert.ToInt32(request.Argument.ToString());
-            Console.WriteLine("Retrieving user with id " + userId);
-            User user = await userRepo.GetUserByIdAsync(userId);
+            Console.WriteLine("Get user argument " + request.Argument);
+            List<int> userIds = JsonSerializer.Deserialize<List<int>>(request.Argument.ToString());
+            Console.WriteLine("Retrieving user with id " + userIds[1] + " by " + userIds[0]);
+            UserSocketsModel user = await userRepo.GetUserByIdAsync(userIds[0], userIds[1]);
             Request requestResponse = new Request
             {
                 ActionType = ActionType.USER_GET_BY_ID.ToString(),
                 Argument = JsonSerializer.Serialize(user)
             };
-            byte[] readAvatarFile;
-            byte[] readBackgroundFile;
             List<byte[]> images = new List<byte[]>();
             try
             {
                 // /Images/users/{userId}/....
                 // /Images/posts/{postId}/....
-                readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Avatar/{user.Id}.png");
-                images.Add(ResizeImage(readAvatarFile, 200, 200));
-                readBackgroundFile = File.ReadAllBytes($"{FILE_PATH}/Background/{user.Id}.jpg");
+                var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{user.Id}/avatar.jpg");
+                images.Add(ImagesUtil.ResizeImage(readAvatarFile, 200, 200));
+                var readBackgroundFile = File.ReadAllBytes($"{FILE_PATH}/Users/{user.Id}/background.jpg");
                 images.Add(readBackgroundFile);
             }
             catch (Exception e)
@@ -127,43 +198,31 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         private async Task<ActualRequest> UpdateUserAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
-            User user = (User) request.Argument;
+            UserSocketsModel user = JsonSerializer.Deserialize<UserSocketsModel>(request.Argument.ToString());
+            bool result = await userRepo.EditUserAsync(user);
             Request requestResponse = new Request
             {
                 ActionType = ActionType.USER_EDIT.ToString(),
-                Argument = JsonSerializer.Serialize(user)
+                Argument = JsonSerializer.Serialize(result)
             };
-            byte[] readAvatarFile;
-            byte[] readBackgroundFile;
-            List<byte[]> images = new List<byte[]>();
-            try
+            if (actualRequest.Images != null && actualRequest.Images.Any())
             {
-                // /Images/users/{userId}/....
-                // /Images/posts/{postId}/....
-                readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/{user.Id}/Avatar.png");
-                images.Add(readAvatarFile);
-                readBackgroundFile = File.ReadAllBytes($"{FILE_PATH}/{user.Id}/Background.jpg");
-                images.Add(readBackgroundFile);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("No avatar found for user " + user.Id);
+                if (user.Avatar != null)
+                {
+                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}/avatar.jpg");
+                    if (user.ProfileBackground != null)
+                        ImagesUtil.WriteImageToPath(actualRequest.Images[1],
+                            $"{FILE_PATH}/Users/{user.Id}/background.jpg");
+                }
+                else if (user.ProfileBackground != null)
+                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}/background.jpg");
             }
 
             return new ActualRequest
             {
                 Request = requestResponse,
-                Images = images
+                Images = null
             };
-        }
-
-        private byte[] ResizeImage(byte[] initialImage, int width, int height)
-        {
-            SKBitmap source = SKBitmap.Decode(initialImage);
-            using SKBitmap scaledBitmap = source.Resize(new SKImageInfo(width, height), SKFilterQuality.Medium);
-            using SKImage scaledImage = SKImage.FromBitmap(scaledBitmap);
-            using SKData data = scaledImage.Encode();
-            return data.ToArray();
         }
     }
 }

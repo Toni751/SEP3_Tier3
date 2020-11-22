@@ -1,4 +1,5 @@
 ﻿using System;
+using SEP3_Tier3.Core;
 using SEP3_Tier3.Repositories;
 using SEP3_Tier3.Repositories.Implementation;
 using SEP3_Tier3.SocketControllers;
@@ -10,9 +11,9 @@ namespace SEP3_Tier3
     {
         static void Main(string[] args)
         {
-            IUserRepo userRepo = new UserRepo();
-            IUserSocket userSocket = new UserSocket(userRepo);
-            ServerSocket serverSocket = new ServerSocket(userSocket);
+            RepositoriesFactory repoFactory = new RepositoriesFactory();
+            SocketControllerFactory socketFactory = new SocketControllerFactory(repoFactory);
+            ServerSocket serverSocket = new ServerSocket(socketFactory);
             serverSocket.Start();
         }
     }
