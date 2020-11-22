@@ -56,7 +56,7 @@ namespace SEP3_Tier3
             ActualRequest actualRequest;
             if (readFromClient.ActionType.Equals(ActionType.HAS_IMAGES.ToString()))
             {
-                List<int> incomingImageSizes = (List<int>) readFromClient.Argument;
+                List<int> incomingImageSizes = JsonSerializer.Deserialize<List<int>>(readFromClient.Argument.ToString());
                 List<byte[]> incomingImages = new List<byte[]>();
 
                 foreach (var imageSize in incomingImageSizes)

@@ -109,8 +109,19 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             {
                 try
                 {
+                    Console.WriteLine($"************* {FILE_PATH}/Users/defaultAvatar.jpg");
+                    
                     byte[] readDefaultAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/defaultAvatar.jpg");
-                    ImagesUtil.WriteImageToPath(readDefaultAvatar, $"{FILE_PATH}/Users/{result}/avatar.jpg");
+                    
+                    Console.WriteLine($"************* After first");
+                    
+                    byte[] readDefaultBg = File.ReadAllBytes($"{FILE_PATH}/Users/defaultBg.jpg");
+                    
+                    
+                    Console.WriteLine($"************* After second");
+                    
+                    ImagesUtil.WriteImageToPath(readDefaultAvatar, $"{FILE_PATH}/Users/{result}", "/avatar.jpg");
+                    ImagesUtil.WriteImageToPath(readDefaultBg, $"{FILE_PATH}/Users/{result}", "/background.jpg");
                 }
                 catch (Exception e)
                 {
@@ -135,7 +146,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             Request requestResponse = new Request
             {
                 ActionType = ActionType.USER_LOGIN.ToString(),
-                Argument = loginResult
+                Argument = JsonSerializer.Serialize(loginResult)
             };
             byte[] readFile;
             List<byte[]> images = new List<byte[]>();
@@ -198,6 +209,9 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         private async Task<ActualRequest> UpdateUserAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
+
+            Console.WriteLine("********:" + request.Argument.ToString());
+            
             UserSocketsModel user = JsonSerializer.Deserialize<UserSocketsModel>(request.Argument.ToString());
             bool result = await userRepo.EditUserAsync(user);
             Request requestResponse = new Request
@@ -209,13 +223,13 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             {
                 if (user.Avatar != null)
                 {
-                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}/avatar.jpg");
+                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{result}", "/avatar.jpg");
                     if (user.ProfileBackground != null)
                         ImagesUtil.WriteImageToPath(actualRequest.Images[1],
-                            $"{FILE_PATH}/Users/{user.Id}/background.jpg");
+                            $"{FILE_PATH}/Users/{result}", "/background.jpg");
                 }
                 else if (user.ProfileBackground != null)
-                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}/background.jpg");
+                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{result}", "/background.jpg");
             }
 
             return new ActualRequest

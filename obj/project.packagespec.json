@@ -1,19 +1,15 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "C:\\Users\\Toni\\RiderProjects\\SEP3_Tier3\\SEP3_Tier3.csproj",
+    "projectUniqueName": "C:\\Users\\Przemo\\RiderProjects\\SEP3_Tier3UpdateV1\\SEP3_Tier3.csproj",
     "projectName": "SEP3_Tier3",
-    "projectPath": "C:\\Users\\Toni\\RiderProjects\\SEP3_Tier3\\SEP3_Tier3.csproj",
-    "outputPath": "C:\\Users\\Toni\\RiderProjects\\SEP3_Tier3\\obj\\",
+    "projectPath": "C:\\Users\\Przemo\\RiderProjects\\SEP3_Tier3UpdateV1\\SEP3_Tier3.csproj",
+    "outputPath": "C:\\Users\\Przemo\\RiderProjects\\SEP3_Tier3UpdateV1\\obj\\",
     "projectStyle": "PackageReference",
-    "fallbackFolders": [
-      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-    ],
     "originalTargetFrameworks": [
       "netcoreapp3.1"
     ],
     "sources": {
-      "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
       "https://api.nuget.org/v3/index.json": {}
     },
     "frameworks": {
@@ -60,7 +56,7 @@
           "privateAssets": "all"
         }
       },
-      "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
+      "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
     }
   }
 }

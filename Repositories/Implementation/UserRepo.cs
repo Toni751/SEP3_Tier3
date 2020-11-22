@@ -128,6 +128,7 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
+
                 User userDb = new User
                 {
                     Id = user.Id,
@@ -136,9 +137,11 @@ namespace SEP3_Tier3.Repositories.Implementation
                     Description = user.Description,
                     Email = user.Email,
                     Name = user.Name,
-                    Password = user.Password,
                     Score = user.Score
                 };
+                if (user.Password != null)
+                    userDb.Password = user.Password;
+
                 ctx.Users.Update(userDb);
                 await ctx.SaveChangesAsync();
             }
