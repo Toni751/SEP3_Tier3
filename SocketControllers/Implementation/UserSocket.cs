@@ -233,16 +233,31 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
             if (actualRequest.Images != null && actualRequest.Images.Any())
             {
-                if (user.Avatar != null)
+                //if (actualRequest.Images[0])
+                //{
+                if (user.Email != null)
                 {
-                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{result}", "/avatar.jpg");
-                    if (user.ProfileBackground != null)
-                        ImagesUtil.WriteImageToPath(actualRequest.Images[1],
-                            $"{FILE_PATH}/Users/{result}", "/background.jpg");
+                     ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}", "/avatar.jpg");
+                     Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only avatar");
                 }
-                else if (user.ProfileBackground != null)
-                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{result}",
-                        "/background.jpg");
+                else
+                {
+                      ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}", "/background.jpg");
+                      Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only bg");
+                }
+                   
+                    // if (user.ProfileBackground.Length > 2)
+                    // {
+                         // ImagesUtil.WriteImageToPath(actualRequest.Images[1], $"{FILE_PATH}/Users/{result}", "/background.jpg");
+                         // Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: bg and avatar");
+                    // }
+                       
+                // }
+                // else if (user.ProfileBackground.Length > 2)
+                // {
+                    
+                //}
+                  
             }
 
             return new ActualRequest
