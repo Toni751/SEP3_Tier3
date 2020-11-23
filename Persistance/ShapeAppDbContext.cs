@@ -102,6 +102,9 @@ namespace SEP3_T3.Persistance
             modelBuilder.Entity<DietMeal>()
                 .HasOne(dm => dm.Meal).WithMany();
 
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
 
             // modelBuilder.Entity<Administrator>(entity =>
             // {

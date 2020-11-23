@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v3.1": {
       "SEP3_Tier3/1.0.0": {
         "dependencies": {
+          "Microsoft.EntityFrameworkCore.Analyzers": "3.1.10",
           "Microsoft.EntityFrameworkCore.Design": "3.1.10",
           "MySql.Data.EntityFrameworkCore": "8.0.20",
           "SkiaSharp": "2.80.2"

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
@@ -9,6 +10,7 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
         
+        [Required]
         [JsonPropertyName("title")]
         public string Title { get; set;}
         

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
@@ -9,6 +10,7 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("owner")]
         public User Owner { get; set; }
         
+        [Required]
         [JsonPropertyName("content")]
         public string Content { get; set; }
         

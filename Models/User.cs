@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
@@ -12,9 +13,11 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("email")]
         public string Email { get; set; }
         
+        [Required]
         [JsonPropertyName("password")]
         public string Password { get; set; }
 
+        [Required]
         [JsonPropertyName("name")]
         public string Name { get; set; }
         
@@ -39,6 +42,7 @@ namespace SEP3_Tier3.Models
         // [JsonPropertyName("profileBackground")]
         // public byte[] ProfileBackground { get; set; }
         
+        [Required]
         [JsonPropertyName("city")]
         public string City { get; set; }
         

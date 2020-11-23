@@ -17,6 +17,7 @@ namespace SEP3_Tier3.Models
         USER_SHARE_DIETS,
         USER_FOLLOW_PAGE,
         USER_RATE_PAGE,
+        USER_REPORT,
         ADMIN_GET_USERS,
         ADMIN_GET_POSTS,
         HAS_IMAGES

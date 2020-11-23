@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
@@ -7,9 +8,11 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
         
+        [Required]
         [JsonPropertyName("email")]
         public string Email { get; set; }
         
+        [Required]
         [JsonPropertyName("password")]
         public string Password { get; set; }
     }

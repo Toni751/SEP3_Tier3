@@ -43,6 +43,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 case "USER_SHARE_DIETS":
                 case "USER_FOLLOW_PAGE":
                 case "USER_RATE_PAGE":
+                case "USER_REPORT":
                     return await PostUserAction(actualRequest);
                 default:
                     return null;
@@ -80,6 +81,9 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             int userId = Convert.ToInt32(request.Argument.ToString());
             Console.WriteLine("Deleting user with id " + userId);
             bool response = await userRepo.DeleteUserAsync(userId);
+            if (response)
+                ImagesUtil.DeleteUserFolder($"{FILE_PATH}/Users/{userId}");
+
             Request responseRequest = new Request
             {
                 ActionType = ActionType.USER_DELETE.ToString(),
@@ -110,16 +114,16 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 try
                 {
                     Console.WriteLine($"************* {FILE_PATH}/Users/defaultAvatar.jpg");
-                    
+
                     byte[] readDefaultAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/defaultAvatar.jpg");
-                    
+
                     Console.WriteLine($"************* After first");
-                    
+
                     byte[] readDefaultBg = File.ReadAllBytes($"{FILE_PATH}/Users/defaultBg.jpg");
-                    
-                    
+
+
                     Console.WriteLine($"************* After second");
-                    
+
                     ImagesUtil.WriteImageToPath(readDefaultAvatar, $"{FILE_PATH}/Users/{result}", "/avatar.jpg");
                     ImagesUtil.WriteImageToPath(readDefaultBg, $"{FILE_PATH}/Users/{result}", "/background.jpg");
                 }
@@ -148,14 +152,22 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 ActionType = ActionType.USER_LOGIN.ToString(),
                 Argument = JsonSerializer.Serialize(loginResult)
             };
-            byte[] readFile;
+            if (loginResult == null)
+                return new ActualRequest
+                {
+                    Request = requestResponse,
+                    Images = null
+                };
             List<byte[]> images = new List<byte[]>();
-            if (!loginResult.AccountType.Equals("Administrator")) {
-                try {
-                    readFile = File.ReadAllBytes($"{FILE_PATH}/Users/{loginResult.UserId}/avatar.jpg");
+            if (!loginResult.AccountType.Equals("Administrator"))
+            {
+                try
+                {
+                    byte[] readFile = File.ReadAllBytes($"{FILE_PATH}/Users/{loginResult.UserId}/avatar.jpg");
                     images.Add(readFile);
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
                     Console.WriteLine("No avatar found for user " + loginResult.UserId);
                 }
             }
@@ -211,7 +223,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             Request request = actualRequest.Request;
 
             Console.WriteLine("********:" + request.Argument.ToString());
-            
+
             UserSocketsModel user = JsonSerializer.Deserialize<UserSocketsModel>(request.Argument.ToString());
             bool result = await userRepo.EditUserAsync(user);
             Request requestResponse = new Request
@@ -229,7 +241,8 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                             $"{FILE_PATH}/Users/{result}", "/background.jpg");
                 }
                 else if (user.ProfileBackground != null)
-                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{result}", "/background.jpg");
+                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{result}",
+                        "/background.jpg");
             }
 
             return new ActualRequest

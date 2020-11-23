@@ -1,4 +1,6 @@
-﻿namespace SEP3_Tier3.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SEP3_Tier3.Models
 {
     public class PageRating
     {
@@ -7,6 +9,7 @@
         public int UserId { get; set; }
         public User User { get; set; }
         
+        [Required]
         public int Rating { get; set; }
     }
 }

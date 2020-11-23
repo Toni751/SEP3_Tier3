@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -18,16 +19,23 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                await ctx.Users.AddAsync(new User
+                try
                 {
-                    Address = user.Address,
-                    City = user.City,
-                    Description = user.Description,
-                    Email = user.Email,
-                    Name = user.Name,
-                    Password = user.Password
-                });
-                await ctx.SaveChangesAsync();
+                    await ctx.Users.AddAsync(new User
+                    {
+                        Address = user.Address,
+                        City = user.City,
+                        Description = user.Description,
+                        Email = user.Email,
+                        Name = user.Name,
+                        Password = user.Password
+                    });
+                    await ctx.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return -1;
+                }
                 int userId = ctx.Users.First(u => u.Email.Equals(user.Email)).Id;
                 Console.WriteLine("Added user to database with id " + userId);
                 return userId;
@@ -55,19 +63,16 @@ namespace SEP3_Tier3.Repositories.Implementation
                         AccountType = accountType,
                     };
                 }
-                else
-                {
-                    Administrator admin = await ctx.Administrators.FirstOrDefaultAsync(a =>
-                        a.Email.Equals(email) && a.Password.Equals(password));
-                    if (admin != null)
-                        return new UserShortVersion
-                        {
-                            UserId = admin.Id,
-                            AccountType = "Administrator",
-                            UserFullName = admin.Email
-                        };
 
-                }
+                Administrator admin = await ctx.Administrators.FirstOrDefaultAsync(a =>
+                    a.Email.Equals(email) && a.Password.Equals(password));
+                if (admin != null)
+                    return new UserShortVersion
+                    {
+                        UserId = admin.Id,
+                        AccountType = "Administrator",
+                        UserFullName = admin.Email
+                    };
 
                 return null;
             }
@@ -128,22 +133,31 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-
-                User userDb = new User
-                {
+                User userDb = new User {
                     Id = user.Id,
-                    Address = user.Address,
-                    City = user.City,
-                    Description = user.Description,
-                    Email = user.Email,
-                    Name = user.Name,
-                    Score = user.Score
                 };
+                if (user.Email != null)
+                    userDb.Email = user.Email;
+                if (user.City != null)
+                    userDb.City = user.City;
+                if (user.Description != null)
+                    userDb.Description = user.Description;
+                if (user.Name != null)
+                    userDb.Name = user.Name;
+                if (user.Score != 0)
+                    userDb.Score = user.Score;
+                if (user.Address != null)
+                    userDb.Address = user.Address;
                 if (user.Password != null)
                     userDb.Password = user.Password;
 
-                ctx.Users.Update(userDb);
-                await ctx.SaveChangesAsync();
+                try {
+                    ctx.Users.Update(userDb);
+                    await ctx.SaveChangesAsync();
+                }
+                catch (Exception e) {
+                    return false;
+                }
             }
 
             return true;
@@ -153,14 +167,12 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                try
-                {
+                try {
                     User user = await ctx.Users.FirstAsync(u => u.Id == userId);
                     ctx.Users.Remove(user);
                     await ctx.SaveChangesAsync();
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     return false;
                 }
 
@@ -175,7 +187,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                 UserAction userAction = await ctx.UserActions.FirstOrDefaultAsync(ua =>
                     ua.SenderId == userActionSockets.SenderId
                     && ua.ReceiverId == userActionSockets.ReceiverId);
-
+                
                 UserAction ifNullUserAction = new UserAction();
                 if (userAction == null)
                     ifNullUserAction = new UserAction
@@ -183,6 +195,11 @@ namespace SEP3_Tier3.Repositories.Implementation
                         SenderId = userActionSockets.SenderId,
                         ReceiverId = userActionSockets.ReceiverId
                     };
+                
+                if (userActionSockets.Value.ToString().Equals("False"))
+                    userActionSockets.Value = false;
+                if (userActionSockets.Value.ToString().Equals("True"))
+                    userActionSockets.Value = true;
                 switch (userActionSockets.ActionType)
                 {
                     case "USER_FRIEND_REQUEST_SEND":
@@ -192,11 +209,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                             ifNullUserAction.IsFriendRequest = (bool) userActionSockets.Value;
                         break;
                     case "USER_FRIEND_REQUEST_RESPONSE":
-                        if (userAction != null) 
+                        if (userAction != null)
                         {
                             userAction.IsFriendRequest = false;
                             if ((bool) userActionSockets.Value)
-                                await ctx.Friendships.AddAsync(new Friendship {
+                                await ctx.Friendships.AddAsync(new Friendship
+                                {
                                     FirstUserId = userActionSockets.SenderId,
                                     SecondUserId = userActionSockets.ReceiverId
                                 });
@@ -219,6 +237,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                             userAction.IsFollowPage = (bool) userActionSockets.Value;
                         else
                             ifNullUserAction.IsFollowPage = (bool) userActionSockets.Value;
+                        break;
+                    case "USER_REPORT":
+                        if (userAction != null)
+                            userAction.IsReport = (bool) userActionSockets.Value;
+                        else
+                            ifNullUserAction.IsReport = (bool) userActionSockets.Value;
                         break;
                 }
 
