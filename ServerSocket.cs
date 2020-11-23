@@ -52,19 +52,44 @@ namespace SEP3_Tier3
             string readFromClientAsJson = Encoding.ASCII.GetString(dataFromClient, 0, bytesRead);
             Request readFromClient = JsonSerializer.Deserialize<Request>(readFromClientAsJson);
             Console.WriteLine("Request deserialized " + readFromClient.ActionType + readFromClient.Argument);
-
+            
             ActualRequest actualRequest;
             if (readFromClient.ActionType.Equals(ActionType.HAS_IMAGES.ToString()))
             {
                 List<int> incomingImageSizes = JsonSerializer.Deserialize<List<int>>(readFromClient.Argument.ToString());
                 List<byte[]> incomingImages = new List<byte[]>();
 
+                string confirmation = $"Waiting for {incomingImageSizes.Count} images";
+                byte[] confirmationToClient = Encoding.ASCII.GetBytes(confirmation);
+                stream.Write(confirmationToClient, 0, confirmationToClient.Length);
+
                 foreach (var imageSize in incomingImageSizes)
                 {
                     byte[] temp = new byte[imageSize];
-                    int imageBytesRead = stream.Read(temp, 0, temp.Length);
+                    byte[] finalImage = new byte[imageSize];
+                    Console.WriteLine("Image size is " + imageSize);
+                    int bytesLeftFromImage = imageSize;
+                    int imageBytesRead;
+                    do
+                    {
+                        imageBytesRead = stream.Read(temp, 0, bytesLeftFromImage);
+                        Console.WriteLine("Read bytes " + imageBytesRead);
+                        int difference = imageSize - bytesLeftFromImage;
+                        Console.WriteLine("Difference is " + difference);
+                        bytesLeftFromImage -= imageBytesRead;
+                        Console.WriteLine("Bytes left from image " + bytesLeftFromImage);
+                        for (int i = 0; i < imageBytesRead; i++)
+                        {
+                            finalImage[i + difference] = temp[i];
+                        }
+                    // i 3 3
+                    // b 7 4
+                    // d 0 3
+                    // a 0..3  3..6
+                    } while (bytesLeftFromImage > 0);
+                    
                     Console.WriteLine("Image bytes read length " + imageBytesRead);
-                    incomingImages.Add(temp);
+                    incomingImages.Add(finalImage);
                 }
 
                 dataFromClient = new byte[65535];
@@ -126,8 +151,6 @@ namespace SEP3_Tier3
 
             Console.WriteLine("Sending back to client response: " + requestResponseAsJson);
             byte[] dataToClient = Encoding.ASCII.GetBytes(requestResponseAsJson);
-
-            //byte[] dataToClient = File.ReadAllBytes("C:/Users/Przemo/RiderProjects/SEP3_Tier3/Images/Avatars/0.png");
             stream.Write(dataToClient, 0, dataToClient.Length);
 
             client.Close();

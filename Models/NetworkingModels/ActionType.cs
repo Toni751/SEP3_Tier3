@@ -20,6 +20,7 @@ namespace SEP3_Tier3.Models
         USER_REPORT,
         ADMIN_GET_USERS,
         ADMIN_GET_POSTS,
+        ADMIN_GET_NUMBER,
         HAS_IMAGES
     }
 }

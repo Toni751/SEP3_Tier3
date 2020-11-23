@@ -23,10 +23,22 @@ namespace SEP3_Tier3.Repositories.Implementation
                     })
                     .OrderByDescending(ur => ur.ReportCount).ToList();
 
+                List<int> allUserIds = ctx.Users.Select(u => u.Id).ToList();
+                List<int> allReportedUserIds = new List<int>();
+                
                 foreach (var userReport in userReportList)
                 {
-                    Console.WriteLine(
-                        $"User {userReport.ReportReceiverId} was reported {userReport.ReportCount} times");
+                    Console.WriteLine($"User {userReport.ReportReceiverId} was reported {userReport.ReportCount} times");
+                    allReportedUserIds.Add(userReport.ReportReceiverId);
+                }
+
+                for (int i = 0; i < allUserIds.Count; i++)
+                {
+                    if (!CheckIfIdIsInList(allUserIds[i], allReportedUserIds))
+                        userReportList.Add(new {
+                            ReportReceiverId = allUserIds[i],
+                            ReportCount = 0
+                        });
                 }
 
                 if (offset > userReportList.Count)
@@ -35,7 +47,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                 List<UserShortVersion> users = new List<UserShortVersion>();
                 for (int i = offset; i < offset + limit; i++)
                 {
-                    if (i > userReportList.Count)
+                    if (i >= userReportList.Count)
                         break;
 
                     users.Add(GetUserShortVersionById(userReportList[i].ReportReceiverId));
@@ -45,6 +57,13 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
+        private bool CheckIfIdIsInList(int id, List<int> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+                if (id == list[i])
+                    return true;
+            return false;
+        }
         public async Task<List<PostShortVersion>> GetAdminPostsAsync(int limit, int offset)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -58,18 +77,30 @@ namespace SEP3_Tier3.Repositories.Implementation
                     })
                     .OrderByDescending(pr => pr.ReportCount).ToList();
 
+                List<int> allPostIds = ctx.Posts.Select(p => p.Id).ToList();
+                List<int> allReportedPostIds = new List<int>();
                 foreach (var postReport in postReportList)
                 {
                     Console.WriteLine($"User {postReport.ReportPostId} was reported {postReport.ReportCount} times");
+                    allReportedPostIds.Add(postReport.ReportPostId);
                 }
 
+                for (int i = 0; i < allPostIds.Count; i++)
+                {
+                    if (!CheckIfIdIsInList(allPostIds[i], allReportedPostIds))
+                        postReportList.Add(new {
+                            ReportPostId = allPostIds[i],
+                            ReportCount = 0
+                        });
+                }
+                
                 if (offset > postReportList.Count)
                     return null;
 
                 List<PostShortVersion> posts = new List<PostShortVersion>();
                 for (int i = offset; i < offset + limit; i++)
                 {
-                    if (i > postReportList.Count)
+                    if (i >= postReportList.Count)
                         break;
 
                     Post post = await ctx.Posts.FirstAsync(p => p.Id == postReportList[i].ReportPostId);
@@ -84,6 +115,16 @@ namespace SEP3_Tier3.Repositories.Implementation
                 }
 
                 return posts;
+            }
+        }
+
+        public async Task<int> GetTotalNumberAsync(string modelType)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                if (modelType.Equals("users"))
+                    return await ctx.Users.CountAsync(u => u.Id >= 0);
+                return await ctx.Posts.CountAsync(p => p.Id >= 0);
             }
         }
 

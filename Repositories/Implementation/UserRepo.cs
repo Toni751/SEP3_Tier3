@@ -52,10 +52,6 @@ namespace SEP3_Tier3.Repositories.Implementation
                 {
                     string accountType = user.Address != null ? "PageOwner" : "RegularUser";
 
-                    // byte[] avatar = File.ReadAllBytes("C:/Users/Przemo/RiderProjects/SEP3_Tier3/Images/Avatars/"+user.Id+".png");
-
-                    //  Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" + avatar.Length);
-
                     return new UserShortVersion
                     {
                         UserId = user.Id,
@@ -133,11 +129,12 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                User userDb = new User {
-                    Id = user.Id,
-                };
+                User userDb = await ctx.Users.FirstAsync(u => u.Id == user.Id);
                 if (user.Email != null)
                     userDb.Email = user.Email;
+                else //this means that the request is only supposed to edit the bg picture, without making changes to the db
+                    return true;
+                
                 if (user.City != null)
                     userDb.City = user.City;
                 if (user.Description != null)
