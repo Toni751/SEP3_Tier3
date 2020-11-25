@@ -31,6 +31,8 @@
         <e p="20201123110627_PasswordRequiredNow.Designer.cs" t="Include" />
         <e p="20201123111325_NotNullConstraintsEverywhere.cs" t="Include" />
         <e p="20201123111325_NotNullConstraintsEverywhere.Designer.cs" t="Include" />
+        <e p="20201125115940_AddedNotifications.cs" t="Include" />
+        <e p="20201125115940_AddedNotifications.Designer.cs" t="Include" />
         <e p="ShapeAppDbContextModelSnapshot.cs" t="Include" />
       </e>
       <e p="Models" t="Include">
@@ -53,6 +55,7 @@
           <e p="UserShortVersion.cs" t="Include" />
           <e p="UserSocketsModel.cs" t="Include" />
         </e>
+        <e p="Notification.cs" t="Include" />
         <e p="PageRating.cs" t="Include" />
         <e p="Post.cs" t="Include" />
         <e p="PostAction.cs" t="Include" />

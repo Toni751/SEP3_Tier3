@@ -29,49 +29,15 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4bf017e4-d7aa-4188-a323-02e2e71df2c5" name="Default Changelist" comment="Admin + Images stuff">
-      <change afterPath="$PROJECT_DIR$/Migrations/20201123110053_IndexOnEmalAndRequiredConstraint.Designer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Migrations/20201123110053_IndexOnEmalAndRequiredConstraint.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Migrations/20201123110627_PasswordRequiredNow.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Migrations/20201123111325_NotNullConstraintsEverywhere.cs" afterDir="false" />
+    <list default="true" id="4bf017e4-d7aa-4188-a323-02e2e71df2c5" name="Default Changelist" comment="Added notifications">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SEP3_Tier3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ImagesUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ImagesUtil.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Migrations/ShapeAppDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Migrations/ShapeAppDbContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Address.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Address.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Administrator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Administrator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Comment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Comment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Diet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Diet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Exercise.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Exercise.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Meal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Meal.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/NetworkingModels/ActionType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/NetworkingModels/ActionType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/PageRating.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/PageRating.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Post.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Post.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/Training.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/Training.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Models/User.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Persistance/ShapeAppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Persistance/ShapeAppDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Repositories/Implementation/UserRepo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Repositories/Implementation/UserRepo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SEP3_Tier3.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/SEP3_Tier3.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SocketControllers/Implementation/UserSocket.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SocketControllers/Implementation/UserSocket.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.deps.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.deps.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.dll" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.exe" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.runtimeconfig.dev.json" beforeDir="false" afterPath="$PROJECT_DIR$/bin/Debug/netcoreapp3.1/SEP3_Tier3.runtimeconfig.dev.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.assets.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.csproj.CoreCompileInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.csproj.CoreCompileInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.csprojAssemblyReference.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.exe" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/Debug/netcoreapp3.1/SEP3_Tier3.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/SEP3_Tier3.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/SEP3_Tier3.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/SEP3_Tier3.csproj.nuget.g.props" beforeDir="false" afterPath="$PROJECT_DIR$/obj/SEP3_Tier3.csproj.nuget.g.props" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,14 +88,8 @@
         <option value="$PROJECT_DIR$/ImagesFilePath.cs" />
         <option value="$PROJECT_DIR$/Core/SocketControllerFactory.cs" />
         <option value="$PROJECT_DIR$/Program.cs" />
-        <option value="$PROJECT_DIR$/Repositories/IAdminRepo.cs" />
-        <option value="$PROJECT_DIR$/SocketControllers/Implementation/AdminSocket.cs" />
         <option value="$PROJECT_DIR$/Models/PostShortVersion.cs" />
-        <option value="$PROJECT_DIR$/Repositories/Implementation/AdminRepo.cs" />
-        <option value="$PROJECT_DIR$/Models/NetworkingModels/UserActionSockets.cs" />
         <option value="$PROJECT_DIR$/Repositories/IUserRepo.cs" />
-        <option value="$PROJECT_DIR$/ServerSocket.cs" />
-        <option value="$PROJECT_DIR$/Persistance/ShapeAppDbContext.cs" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/384bde0d-b971-471a-b48a-db843b29f87a/console.sql" />
         <option value="$PROJECT_DIR$/Models/User.cs" />
         <option value="$PROJECT_DIR$/Models/Training.cs" />
@@ -141,9 +101,16 @@
         <option value="$PROJECT_DIR$/Models/Comment.cs" />
         <option value="$PROJECT_DIR$/Models/Administrator.cs" />
         <option value="$PROJECT_DIR$/Models/Address.cs" />
-        <option value="$PROJECT_DIR$/ImagesUtil.cs" />
         <option value="$PROJECT_DIR$/SocketControllers/Implementation/UserSocket.cs" />
+        <option value="$PROJECT_DIR$/ImagesUtil.cs" />
+        <option value="$PROJECT_DIR$/ServerSocket.cs" />
         <option value="$PROJECT_DIR$/Models/NetworkingModels/ActionType.cs" />
+        <option value="$PROJECT_DIR$/Repositories/IAdminRepo.cs" />
+        <option value="$PROJECT_DIR$/Repositories/Implementation/AdminRepo.cs" />
+        <option value="$PROJECT_DIR$/SocketControllers/Implementation/AdminSocket.cs" />
+        <option value="$PROJECT_DIR$/Models/NetworkingModels/UserActionSockets.cs" />
+        <option value="$PROJECT_DIR$/Models/Notification.cs" />
+        <option value="$PROJECT_DIR$/Persistance/ShapeAppDbContext.cs" />
         <option value="$PROJECT_DIR$/Repositories/Implementation/UserRepo.cs" />
       </list>
     </option>
@@ -201,7 +168,8 @@
       <workItem from="1605952092744" duration="8443000" />
       <workItem from="1605973327167" duration="13865000" />
       <workItem from="1606037500661" duration="12786000" />
-      <workItem from="1606128378696" duration="12074000" />
+      <workItem from="1606128378696" duration="23883000" />
+      <workItem from="1606299865679" duration="3187000" />
     </task>
     <task id="LOCAL-00001" summary="First run">
       <created>1605174208193</created>
@@ -231,7 +199,28 @@
       <option name="project" value="LOCAL" />
       <updated>1606070149172</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Small update">
+      <created>1606151261633</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1606151261633</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Admin stuff fixed">
+      <created>1606170241843</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1606170241843</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Added notifications">
+      <created>1606306484460</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1606306484460</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,14 +259,17 @@
     <MESSAGE value="GetUserByID added" />
     <MESSAGE value="Images Stuff Update" />
     <MESSAGE value="Admin + Images stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="Admin + Images stuff" />
+    <MESSAGE value="Small update" />
+    <MESSAGE value="Admin stuff fixed" />
+    <MESSAGE value="Added notifications" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added notifications" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="552" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606129506447">
+    <state x="552" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606305723716">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="193" y="87" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1605691808467" />
-    <state x="552" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1606129506447" />
+    <state x="552" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1606305723716" />
     <state x="543" y="418" width="539" height="204" key="Github.ShareDialog" timestamp="1605174053843">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -286,26 +278,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="744" y="226" key="Github.UntrackedFilesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605174066525" />
-    <state width="1877" height="283" key="GridCell.Tab.0.bottom" timestamp="1606147770855">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1606170363259">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="124" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1605708135414" />
-    <state width="1877" height="283" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1606147770855" />
-    <state width="1877" height="283" key="GridCell.Tab.0.center" timestamp="1606147770855">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1606170363259" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1606170363259">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="124" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1605708135414" />
-    <state width="1877" height="283" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1606147770855" />
-    <state width="1877" height="283" key="GridCell.Tab.0.left" timestamp="1606147770855">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1606170363259" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1606170363259">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="124" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1605708135414" />
-    <state width="1877" height="283" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1606147770855" />
-    <state width="1877" height="283" key="GridCell.Tab.0.right" timestamp="1606147770855">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1606170363259" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1606170363259">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="124" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1605708135414" />
-    <state width="1877" height="283" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1606147770855" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1606170363259" />
     <state width="196" height="455" key="HiddenNamespacesPopup" timestamp="1606129401936">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -314,21 +306,21 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="670" y="198" key="RiderGenerateDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1606039431755" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1606070150867">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1606306487538">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1606070150867" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1606306487538" />
     <state x="102" y="186" key="com.intellij.database.dbimport.ImportDialog" timestamp="1605555399310">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="102" y="186" key="com.intellij.database.dbimport.ImportDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1605555399310" />
-    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1606079386645">
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1606306428136">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1606079386645" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1606143457456">
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1606306428136" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1606307281047">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1606143457456" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1606307281047" />
   </component>
 </project>
