@@ -204,6 +204,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                             userAction.IsFriendRequest = (bool) userActionSockets.Value;
                         else
                             ifNullUserAction.IsFriendRequest = (bool) userActionSockets.Value;
+                        if ((bool) userActionSockets.Value)
+                            await ctx.Notifications.AddAsync(new Notification {
+                                SenderId = userActionSockets.SenderId,
+                                ReceiverId = userActionSockets.ReceiverId,
+                                NotificationType = "USER_FRIEND_REQUEST_SEND"
+                            });
                         break;
                     case "USER_FRIEND_REQUEST_RESPONSE":
                         if (userAction != null)

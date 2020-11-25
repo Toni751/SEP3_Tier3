@@ -14,6 +14,7 @@ namespace SEP3_T3.Persistance
       public DbSet<Friendship> Friendships { get; set; }
       public DbSet<UserAction> UserActions { get; set; }
       public DbSet<PageRating> PageRatings { get; set; }
+      public DbSet<Notification> Notifications { get; set; }
       public DbSet<TrainingExercise> TrainingExercises { get; set; }
       public DbSet<DietMeal> DietMeals { get; set; }
 
@@ -105,6 +106,17 @@ namespace SEP3_T3.Persistance
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+            
+            modelBuilder.Entity<Notification>()
+                .HasKey(n => new
+                {
+                    n.SenderId,
+                    n.ReceiverId
+                });
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Sender).WithMany();
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Receiver).WithMany();
 
             // modelBuilder.Entity<Administrator>(entity =>
             // {

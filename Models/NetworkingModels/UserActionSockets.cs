@@ -8,6 +8,9 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("senderId")]
         public int SenderId { get; set; }
         
+        [JsonPropertyName("senderName")]
+        public string SenderName { get; set; }
+        
         [JsonPropertyName("receiverId")]
         public int ReceiverId { get; set; }
         
