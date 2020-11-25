@@ -260,7 +260,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                         ctx.UserActions.Remove(userAction);
                 }
 
-                await ctx.SaveChangesAsync();
+                try {
+                    await ctx.SaveChangesAsync();
+                }
+                catch (Exception e) {
+                    return false;
+                }
                 return true;
             }
         }
