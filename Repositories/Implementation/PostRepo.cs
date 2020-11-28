@@ -24,9 +24,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                     TimeStamp = DateTime.Now,
                     HasImage = postShortVersion.HasImage
                 };
+                Console.WriteLine("adding post to db");
                 await ctx.Posts.AddAsync(post);
                 await ctx.SaveChangesAsync();
-                return ctx.Posts.LastAsync().Id;
+                Console.WriteLine("post saved");
+                var newPost = await ctx.Posts.ToListAsync();
+                return newPost.Last().Id;
             }
         }
 
@@ -34,8 +37,12 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                return await ctx.Posts.Where(p => p.Id == postId)
-                    .Include(p => p.Comments).FirstAsync();
+                
+                Post post = await ctx.Posts
+                    .Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == postId);
+                
+                return post;
+
             }
         }
 
@@ -303,6 +310,21 @@ namespace SEP3_Tier3.Repositories.Implementation
                 }
 
                 return posts;
+            }
+        }
+        
+        private UserShortVersion GetUserShortVersionById(int id)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                User user = ctx.Users.First(u => u.Id == id);
+                string accountType = user.Address != null ? "PageOwner" : "RegularUser";
+                return new UserShortVersion
+                {
+                    UserId = user.Id,
+                    UserFullName = user.Name,
+                    AccountType = accountType
+                };
             }
         }
     }

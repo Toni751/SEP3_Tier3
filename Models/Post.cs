@@ -18,15 +18,17 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("content")]
         public string Content { get; set;}
         
+        [JsonIgnore]
         [JsonPropertyName("owner")]
         public User Owner { get; set;}
-        
+
         // [JsonPropertyName("picture")]
         // public byte[] Picture { get; set; }
         
         [JsonPropertyName("timeStamp")]
         public DateTime TimeStamp { get; set;}
         
+        [JsonIgnore]
         [JsonPropertyName("comments")]
         public List<Comment> Comments { get; set;}
         

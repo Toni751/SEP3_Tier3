@@ -109,7 +109,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                         Id = post.Id,
                         Title = post.Title,
                         Content = post.Content,
-                        Owner = GetUserShortVersionById(post.Owner.Id),
+                       // Owner = GetUserShortVersionById(post.Owner.Id),
                         TimeStamp = post.TimeStamp
                     });
                 }

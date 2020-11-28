@@ -29,7 +29,7 @@ namespace SEP3_Tier3.Core
             get {
                 if(postRepo == null)
                     postRepo = new PostRepo();
-                return PostRepo;
+                return postRepo;
             }   
         }
 

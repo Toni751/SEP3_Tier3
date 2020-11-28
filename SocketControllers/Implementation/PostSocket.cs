@@ -26,7 +26,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             switch (actualRequest.Request.ActionType)
             {
                 case "POST_CREATE":
+                {
+                    Console.WriteLine("Post in post socket");
                     return await AddPostAsync(actualRequest);
+                }
+                    
                 case "POST_GET_BY_ID":
                     return await GetPostByIdAsync(actualRequest);
                 case "POST_GET_FOR_USER":
@@ -55,6 +59,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
 
         private async Task<ActualRequest> AddPostAsync(ActualRequest actualRequest)
         {
+            Console.WriteLine("Post in post socket");
             Request request = actualRequest.Request;
             PostShortVersion post = JsonSerializer.Deserialize<PostShortVersion>(request.Argument.ToString());
             int result = await postRepo.AddPostAsync(post);

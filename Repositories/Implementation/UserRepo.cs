@@ -79,8 +79,10 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                return await ctx.Posts.Where(p => p.Owner.Id == id).Take(5).ToListAsync();
+               //return await ctx.Posts.Where(p => p.Owner.Id == id).Take(5).ToListAsync();
             }
+
+            return null;
         }
 
         public async Task<UserSocketsModel> GetUserByIdAsync(int senderId, int receiverId)
