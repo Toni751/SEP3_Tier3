@@ -7,19 +7,44 @@ namespace SEP3_Tier3.Core
     {
         private IAdminRepo adminRepo;
         private IUserRepo userRepo;
+        private IPostRepo postRepo;
 
-        public IAdminRepo AdminRepository()
-        {
-            if(adminRepo == null)
-                adminRepo = new AdminRepo();
-            return adminRepo;
+        public IAdminRepo AdminRepo {
+            get {
+                if(adminRepo == null)
+                    adminRepo = new AdminRepo();
+                return adminRepo;
+            }
+        }
+        
+        public IUserRepo UserRepo {
+            get {
+                if(userRepo == null)
+                   userRepo = new UserRepo();
+                return userRepo;
+            }
         }
 
-        public IUserRepo UserRepository()
-        {
-            if(userRepo == null)
-                userRepo = new UserRepo();
-            return userRepo;
+        public IPostRepo PostRepo {
+            get {
+                if(postRepo == null)
+                    postRepo = new PostRepo();
+                return PostRepo;
+            }   
         }
+
+        // public IAdminRepo AdminRepository()
+        // {
+        //     if(adminRepo == null)
+        //         adminRepo = new AdminRepo();
+        //     return adminRepo;
+        // }
+        //
+        // public IUserRepo UserRepository()
+        // {
+        //     if(userRepo == null)
+        //         userRepo = new UserRepo();
+        //     return userRepo;
+        // }
     }
 }

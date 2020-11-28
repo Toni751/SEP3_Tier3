@@ -10,6 +10,7 @@ namespace SEP3_T3.Persistance
       public DbSet<Administrator> Administrators { get; set; }
       public DbSet<Post> Posts { get; set; }
       public DbSet<Message> Messages { get; set; }
+      public DbSet<Comment> Comments { get; set; }
       public DbSet<PostAction> PostActions { get; set; }
       public DbSet<Friendship> Friendships { get; set; }
       public DbSet<UserAction> UserActions { get; set; }
@@ -110,8 +111,7 @@ namespace SEP3_T3.Persistance
             modelBuilder.Entity<Notification>()
                 .HasKey(n => new
                 {
-                    n.SenderId,
-                    n.ReceiverId
+                    n.Id
                 });
             modelBuilder.Entity<Notification>()
                 .HasOne(n => n.Sender).WithMany();

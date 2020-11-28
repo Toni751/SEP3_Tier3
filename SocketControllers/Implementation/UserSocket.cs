@@ -44,29 +44,49 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 case "USER_FOLLOW_PAGE":
                 case "USER_RATE_PAGE":
                 case "USER_REPORT":
-                    return await PostUserAction(actualRequest);
+                    return await PostUserActionAsync(actualRequest);
+                case "USER_DELETE_NOTIFICATION":
+                    return await DeleteNotificationAsync(actualRequest);
                 default:
                     return null;
             }
         }
 
-        private async Task<ActualRequest> PostUserAction(ActualRequest actualRequest)
+        private async Task<ActualRequest> DeleteNotificationAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
-            UserActionSockets userActionSockets =
-                JsonSerializer.Deserialize<UserActionSockets>(request.Argument.ToString());
-            Console.WriteLine("Posting user action " + userActionSockets.ActionType);
-            bool response;
-            if (userActionSockets.ActionType.Equals("USER_FRIEND_REMOVE"))
-                response = await userRepo.RemoveFriendshipAsync(userActionSockets);
-            else if (userActionSockets.ActionType.Equals("USER_RATE_PAGE"))
-                response = await userRepo.PostPageRatingAsync(userActionSockets);
-            else
-                response = await userRepo.PostUserActionAsync(userActionSockets);
+            int notificationId = Convert.ToInt32(request.Argument.ToString());
+            bool response = await userRepo.DeleteNotificationAsync(notificationId);
             Request responseRequest = new Request
             {
-                ActionType = userActionSockets.ActionType,
+                ActionType = ActionType.USER_DELETE_NOTIFICATION.ToString(),
                 Argument = JsonSerializer.Serialize(response)
+            };
+            return new ActualRequest
+            {
+                Request = responseRequest,
+                Images = null
+            };
+        }
+
+        private async Task<ActualRequest> PostUserActionAsync(ActualRequest actualRequest)
+        {
+            Request request = actualRequest.Request;
+            ModelActionSockets modelActionSockets =
+                JsonSerializer.Deserialize<ModelActionSockets>(request.Argument.ToString());
+            Console.WriteLine("Posting user action " + modelActionSockets.ActionType);
+            int notificationId;
+            if (modelActionSockets.ActionType.Equals("USER_FRIEND_REMOVE"))
+                notificationId = await userRepo.RemoveFriendshipAsync(modelActionSockets);
+            else if (modelActionSockets.ActionType.Equals("USER_RATE_PAGE"))
+                notificationId = await userRepo.PostPageRatingAsync(modelActionSockets);
+            else
+                notificationId = await userRepo.PostUserActionAsync(modelActionSockets);
+
+            Request responseRequest = new Request
+            {
+                ActionType = modelActionSockets.ActionType,
+                Argument = JsonSerializer.Serialize(notificationId)
             };
             return new ActualRequest
             {
@@ -179,11 +199,6 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
-        private async Task<List<Post>> GetLatestPostsForUserAsync(Request request)
-        {
-            throw new System.NotImplementedException();
-        }
-
         private async Task<ActualRequest> GetUserByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -222,7 +237,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         {
             Request request = actualRequest.Request;
 
-            Console.WriteLine("********:" + request.Argument.ToString());
+            Console.WriteLine("********:" + request.Argument);
 
             UserSocketsModel user = JsonSerializer.Deserialize<UserSocketsModel>(request.Argument.ToString());
             bool result = await userRepo.EditUserAsync(user);
@@ -237,27 +252,27 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 //{
                 if (user.Email != null)
                 {
-                     ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}", "/avatar.jpg");
-                     Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only avatar");
+                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}", "/avatar.jpg");
+                    Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only avatar");
                 }
                 else
                 {
-                      ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}", "/background.jpg");
-                      Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only bg");
+                    ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}",
+                        "/background.jpg");
+                    Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only bg");
                 }
-                   
-                    // if (user.ProfileBackground.Length > 2)
-                    // {
-                         // ImagesUtil.WriteImageToPath(actualRequest.Images[1], $"{FILE_PATH}/Users/{result}", "/background.jpg");
-                         // Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: bg and avatar");
-                    // }
-                       
+
+                // if (user.ProfileBackground.Length > 2)
+                // {
+                // ImagesUtil.WriteImageToPath(actualRequest.Images[1], $"{FILE_PATH}/Users/{result}", "/background.jpg");
+                // Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: bg and avatar");
+                // }
+
                 // }
                 // else if (user.ProfileBackground.Length > 2)
                 // {
-                    
+
                 //}
-                  
             }
 
             return new ActualRequest

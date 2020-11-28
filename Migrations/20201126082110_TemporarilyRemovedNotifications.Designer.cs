@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEP3_T3.Persistance;
 
 namespace SEP3_Tier3.Migrations
 {
     [DbContext(typeof(ShapeAppDbContext))]
-    partial class ShapeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201126082110_TemporarilyRemovedNotifications")]
+    partial class TemporarilyRemovedNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,31 +214,6 @@ namespace SEP3_Tier3.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("SEP3_Tier3.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("NotificationType")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("SEP3_Tier3.Models.PageRating", b =>
                 {
                     b.Property<int>("PageId")
@@ -263,9 +240,6 @@ namespace SEP3_Tier3.Migrations
 
                     b.Property<string>("Content")
                         .HasColumnType("text");
-
-                    b.Property<bool>("HasImage")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("OwnerId")
                         .HasColumnType("int");
@@ -479,21 +453,6 @@ namespace SEP3_Tier3.Migrations
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.Message", b =>
-                {
-                    b.HasOne("SEP3_Tier3.Models.User", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SEP3_Tier3.Models.User", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SEP3_Tier3.Models.Notification", b =>
                 {
                     b.HasOne("SEP3_Tier3.Models.User", "Receiver")
                         .WithMany()

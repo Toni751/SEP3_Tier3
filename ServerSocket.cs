@@ -82,10 +82,6 @@ namespace SEP3_Tier3
                         {
                             finalImage[i + difference] = temp[i];
                         }
-                    // i 3 3
-                    // b 7 4
-                    // d 0 3
-                    // a 0..3  3..6
                     } while (bytesLeftFromImage > 0);
                     
                     Console.WriteLine("Image bytes read length " + imageBytesRead);
@@ -115,9 +111,11 @@ namespace SEP3_Tier3
 
             ActualRequest requestResponse;
             if (actualRequest.Request.ActionType.StartsWith("USER"))
-                requestResponse = await socketFactory.UserSocketController().HandleClientRequest(actualRequest);
+                requestResponse = await socketFactory.UserSocket.HandleClientRequest(actualRequest);
             else if (actualRequest.Request.ActionType.StartsWith("ADMIN"))
-                requestResponse = await socketFactory.AdminSocketController().HandleClientRequest(actualRequest);
+                requestResponse = await socketFactory.AdminSocket.HandleClientRequest(actualRequest);
+            else if (actualRequest.Request.ActionType.StartsWith("POST"))
+                requestResponse = await socketFactory.PostSocket.HandleClientRequest(actualRequest);
             else
                 requestResponse = null;
 

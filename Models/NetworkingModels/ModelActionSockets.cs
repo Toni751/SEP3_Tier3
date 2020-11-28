@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
-    public class UserActionSockets
+    public class ModelActionSockets
     {
         [JsonPropertyName("senderId")]
         public int SenderId { get; set; }

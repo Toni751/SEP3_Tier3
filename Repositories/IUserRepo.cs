@@ -13,8 +13,9 @@ namespace SEP3_Tier3.Repositories
         Task<UserSocketsModel> GetUserByIdAsync(int senderId, int receiverId);
         Task<bool> EditUserAsync(UserSocketsModel user);
         Task<bool> DeleteUserAsync(int userId);
-        Task<bool> PostUserActionAsync(UserActionSockets userActionSockets);
-        Task<bool> RemoveFriendshipAsync(UserActionSockets userActionSockets);
-        Task<bool> PostPageRatingAsync(UserActionSockets userActionSockets);
+        Task<int> PostUserActionAsync(ModelActionSockets modelActionSockets);
+        Task<int> RemoveFriendshipAsync(ModelActionSockets modelActionSockets);
+        Task<int> PostPageRatingAsync(ModelActionSockets modelActionSockets);
+        Task<bool> DeleteNotificationAsync(int notificationId);
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
-    public class Post //add owner I think
+    public class Post
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -28,6 +29,9 @@ namespace SEP3_Tier3.Models
         
         [JsonPropertyName("comments")]
         public List<Comment> Comments { get; set;}
+        
+        [JsonPropertyName("hasImage")]
+        public bool HasImage { get; set; }
         
         // [JsonPropertyName("userIdsForLikes")]
         // public List<int> UserIdsForLikes{ get; set;}

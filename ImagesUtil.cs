@@ -57,5 +57,13 @@ namespace SEP3_Tier3
                 Console.WriteLine("Deleted folder " + path);
             }
         }
+
+        public static void DeleteFile(string path)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            var file = directoryInfo.GetFiles()[0];
+            file.Delete();
+            Console.WriteLine("Deleting file " + file.Name);
+        }
     }
 }

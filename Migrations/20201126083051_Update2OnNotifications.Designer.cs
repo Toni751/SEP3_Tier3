@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEP3_T3.Persistance;
 
 namespace SEP3_Tier3.Migrations
 {
     [DbContext(typeof(ShapeAppDbContext))]
-    partial class ShapeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201126083051_Update2OnNotifications")]
+    partial class Update2OnNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,25 +216,19 @@ namespace SEP3_Tier3.Migrations
 
             modelBuilder.Entity("SEP3_Tier3.Models.Notification", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReceiverId")
                         .HasColumnType("int");
 
                     b.Property<string>("NotificationType")
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<int>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SenderId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("SenderId", "ReceiverId", "NotificationType");
 
                     b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
 
                     b.ToTable("Notifications");
                 });
@@ -263,9 +259,6 @@ namespace SEP3_Tier3.Migrations
 
                     b.Property<string>("Content")
                         .HasColumnType("text");
-
-                    b.Property<bool>("HasImage")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("OwnerId")
                         .HasColumnType("int");

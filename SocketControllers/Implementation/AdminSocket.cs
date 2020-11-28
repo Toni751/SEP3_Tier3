@@ -71,8 +71,6 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     }
                 }
             }
-
-
             return new ActualRequest
             {
                 Request = request,

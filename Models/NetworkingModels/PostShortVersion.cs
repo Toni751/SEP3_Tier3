@@ -17,10 +17,19 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("owner")]
         public UserShortVersion Owner { get; set;}
         
-        // [JsonPropertyName("picture")]
-        // public byte[] Picture { get; set; }
+        [JsonPropertyName("picture")]
+        public byte[] Picture { get; set; }
         
         [JsonPropertyName("timeStamp")]
         public DateTime TimeStamp { get; set;}
+        
+        [JsonPropertyName("numberOfComments")]
+        public int NumberOfComments { get; set; }
+        
+        [JsonPropertyName("numberOfLikes")]
+        public int NumberOfLikes { get; set; }
+        
+        [JsonPropertyName("hasImage")]
+        public bool HasImage { get; set; }
     }
 }

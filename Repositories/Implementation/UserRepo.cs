@@ -36,6 +36,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                 {
                     return -1;
                 }
+
                 int userId = ctx.Users.First(u => u.Email.Equals(user.Email)).Id;
                 Console.WriteLine("Added user to database with id " + userId);
                 return userId;
@@ -134,7 +135,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                     userDb.Email = user.Email;
                 else //this means that the request is only supposed to edit the bg picture, without making changes to the db
                     return true;
-                
+
                 if (user.City != null)
                     userDb.City = user.City;
                 if (user.Description != null)
@@ -177,75 +178,89 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public async Task<bool> PostUserActionAsync(UserActionSockets userActionSockets)
+        public async Task<int> PostUserActionAsync(ModelActionSockets modelActionSockets)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 UserAction userAction = await ctx.UserActions.FirstOrDefaultAsync(ua =>
-                    ua.SenderId == userActionSockets.SenderId
-                    && ua.ReceiverId == userActionSockets.ReceiverId);
-                
+                    ua.SenderId == modelActionSockets.SenderId
+                    && ua.ReceiverId == modelActionSockets.ReceiverId);
+
                 UserAction ifNullUserAction = new UserAction();
                 if (userAction == null)
                     ifNullUserAction = new UserAction
                     {
-                        SenderId = userActionSockets.SenderId,
-                        ReceiverId = userActionSockets.ReceiverId
+                        SenderId = modelActionSockets.SenderId,
+                        ReceiverId = modelActionSockets.ReceiverId
                     };
-                
-                if (userActionSockets.Value.ToString().Equals("False"))
-                    userActionSockets.Value = false;
-                if (userActionSockets.Value.ToString().Equals("True"))
-                    userActionSockets.Value = true;
-                switch (userActionSockets.ActionType)
+
+                if (modelActionSockets.Value.ToString().Equals("False"))
+                    modelActionSockets.Value = false;
+                if (modelActionSockets.Value.ToString().Equals("True"))
+                    modelActionSockets.Value = true;
+
+                int returnId = 0;
+                switch (modelActionSockets.ActionType)
                 {
                     case "USER_FRIEND_REQUEST_SEND":
                         if (userAction != null)
-                            userAction.IsFriendRequest = (bool) userActionSockets.Value;
+                            userAction.IsFriendRequest = (bool) modelActionSockets.Value;
                         else
-                            ifNullUserAction.IsFriendRequest = (bool) userActionSockets.Value;
-                        if ((bool) userActionSockets.Value)
+                            ifNullUserAction.IsFriendRequest = (bool) modelActionSockets.Value;
+                        if ((bool) modelActionSockets.Value) {
                             await ctx.Notifications.AddAsync(new Notification {
-                                SenderId = userActionSockets.SenderId,
-                                ReceiverId = userActionSockets.ReceiverId,
+                                SenderId = modelActionSockets.SenderId,
+                                ReceiverId = modelActionSockets.ReceiverId,
                                 NotificationType = "USER_FRIEND_REQUEST_SEND"
                             });
+                            await ctx.SaveChangesAsync();
+                            returnId = ctx.Notifications.First(n => n.SenderId == modelActionSockets.SenderId && n.ReceiverId == modelActionSockets.ReceiverId
+                                && n.NotificationType.Equals("USER_FRIEND_REQUEST_SEND")).Id;
+                            Console.WriteLine("Returning notification id: " + returnId);
+                        }
+                        else {
+                            Notification notification = await ctx.Notifications.FirstAsync(n =>
+                                n.SenderId == modelActionSockets.SenderId && n.ReceiverId == modelActionSockets.ReceiverId
+                                && n.NotificationType.Equals("USER_FRIEND_REQUEST_SEND"));
+                            ctx.Notifications.Remove(notification);
+                        }
                         break;
                     case "USER_FRIEND_REQUEST_RESPONSE":
                         if (userAction != null)
                         {
                             userAction.IsFriendRequest = false;
-                            if ((bool) userActionSockets.Value)
+                            if ((bool) modelActionSockets.Value)
                                 await ctx.Friendships.AddAsync(new Friendship
                                 {
-                                    FirstUserId = userActionSockets.SenderId,
-                                    SecondUserId = userActionSockets.ReceiverId
+                                    FirstUserId = modelActionSockets.SenderId,
+                                    SecondUserId = modelActionSockets.ReceiverId
                                 });
                         }
+
                         break;
                     case "USER_SHARE_TRAININGS":
                         if (userAction != null)
-                            userAction.IsShareTrainings = (bool) userActionSockets.Value;
+                            userAction.IsShareTrainings = (bool) modelActionSockets.Value;
                         else
-                            ifNullUserAction.IsShareTrainings = (bool) userActionSockets.Value;
+                            ifNullUserAction.IsShareTrainings = (bool) modelActionSockets.Value;
                         break;
                     case "USER_SHARE_DIETS":
                         if (userAction != null)
-                            userAction.IsShareDiets = (bool) userActionSockets.Value;
+                            userAction.IsShareDiets = (bool) modelActionSockets.Value;
                         else
-                            ifNullUserAction.IsShareDiets = (bool) userActionSockets.Value;
+                            ifNullUserAction.IsShareDiets = (bool) modelActionSockets.Value;
                         break;
                     case "USER_FOLLOW_PAGE":
                         if (userAction != null)
-                            userAction.IsFollowPage = (bool) userActionSockets.Value;
+                            userAction.IsFollowPage = (bool) modelActionSockets.Value;
                         else
-                            ifNullUserAction.IsFollowPage = (bool) userActionSockets.Value;
+                            ifNullUserAction.IsFollowPage = (bool) modelActionSockets.Value;
                         break;
                     case "USER_REPORT":
                         if (userAction != null)
-                            userAction.IsReport = (bool) userActionSockets.Value;
+                            userAction.IsReport = (bool) modelActionSockets.Value;
                         else
-                            ifNullUserAction.IsReport = (bool) userActionSockets.Value;
+                            ifNullUserAction.IsReport = (bool) modelActionSockets.Value;
                         break;
                 }
 
@@ -260,28 +275,75 @@ namespace SEP3_Tier3.Repositories.Implementation
                         ctx.UserActions.Remove(userAction);
                 }
 
-                try {
+                try
+                {
                     await ctx.SaveChangesAsync();
                 }
-                catch (Exception e) {
-                    return false;
+                catch (Exception e)
+                {
+                    return -1;
                 }
-                return true;
+
+                return returnId;
             }
         }
 
-        public async Task<bool> RemoveFriendshipAsync(UserActionSockets userActionSockets)
+        public async Task<int> RemoveFriendshipAsync(ModelActionSockets modelActionSockets)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 try
                 {
                     Friendship friendship = await ctx.Friendships.FirstAsync(fr =>
-                        (fr.FirstUserId == userActionSockets.SenderId &&
-                         fr.SecondUserId == userActionSockets.ReceiverId)
-                        || (fr.FirstUserId == userActionSockets.ReceiverId &&
-                            fr.SecondUserId == userActionSockets.SenderId));
+                        (fr.FirstUserId == modelActionSockets.SenderId &&
+                         fr.SecondUserId == modelActionSockets.ReceiverId)
+                        || (fr.FirstUserId == modelActionSockets.ReceiverId &&
+                            fr.SecondUserId == modelActionSockets.SenderId));
                     ctx.Friendships.Remove(friendship);
+                    await ctx.SaveChangesAsync();
+                    return 0;
+                }
+                catch (Exception e)
+                {
+                    return -1;
+                }
+            }
+        }
+
+        public async Task<int> PostPageRatingAsync(ModelActionSockets modelActionSockets)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                PageRating pageRating = await ctx.PageRatings.FirstOrDefaultAsync(pr =>
+                    pr.UserId == modelActionSockets.SenderId && pr.PageId == modelActionSockets.ReceiverId);
+                if (pageRating == null)
+                {
+                    await ctx.PageRatings.AddAsync(new PageRating
+                    {
+                        UserId = modelActionSockets.SenderId,
+                        PageId = modelActionSockets.ReceiverId,
+                        Rating = (int) modelActionSockets.Value
+                    });
+                }
+                else
+                {
+                    pageRating.Rating = (int) modelActionSockets.Value;
+                    ctx.PageRatings.Update(pageRating);
+                }
+
+                await ctx.SaveChangesAsync();
+                return 0;
+            }
+        }
+
+        public async Task<bool> DeleteNotificationAsync(int notificationId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                try
+                {
+                    Notification notification = await ctx.Notifications.FirstAsync(n => n.Id == notificationId);
+                    ctx.Notifications.Remove(notification);
                     await ctx.SaveChangesAsync();
                     return true;
                 }
@@ -289,32 +351,6 @@ namespace SEP3_Tier3.Repositories.Implementation
                 {
                     return false;
                 }
-            }
-        }
-
-        public async Task<bool> PostPageRatingAsync(UserActionSockets userActionSockets)
-        {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-                PageRating pageRating = await ctx.PageRatings.FirstOrDefaultAsync(pr =>
-                    pr.UserId == userActionSockets.SenderId && pr.PageId == userActionSockets.ReceiverId);
-                if (pageRating == null)
-                {
-                    await ctx.PageRatings.AddAsync(new PageRating
-                    {
-                        UserId = userActionSockets.SenderId,
-                        PageId = userActionSockets.ReceiverId,
-                        Rating = (int) userActionSockets.Value
-                    });
-                }
-                else
-                {
-                    pageRating.Rating = (int) userActionSockets.Value;
-                    ctx.PageRatings.Update(pageRating);
-                }
-
-                await ctx.SaveChangesAsync();
-                return true;
             }
         }
     }
