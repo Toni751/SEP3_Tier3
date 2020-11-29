@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
-    public class Post
+    public class PostSocketsModel
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
@@ -19,11 +18,8 @@ namespace SEP3_Tier3.Models
         public string Content { get; set;}
         
         [JsonPropertyName("owner")]
-        public User Owner { get; set;}
+        public UserShortVersion Owner { get; set;}
 
-        // [JsonPropertyName("picture")]
-        // public byte[] Picture { get; set; }
-        
         [JsonPropertyName("timeStamp")]
         public DateTime TimeStamp { get; set;}
         
@@ -32,8 +28,5 @@ namespace SEP3_Tier3.Models
         
         [JsonPropertyName("hasImage")]
         public bool HasImage { get; set; }
-        
-        // [JsonPropertyName("userIdsForLikes")]
-        // public List<int> UserIdsForLikes{ get; set;}
     }
 }

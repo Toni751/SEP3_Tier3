@@ -23,14 +23,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
 
         public async Task<ActualRequest> HandleClientRequest(ActualRequest actualRequest)
         {
+            
             switch (actualRequest.Request.ActionType)
             {
                 case "POST_CREATE":
-                {
-                    Console.WriteLine("Post in post socket");
                     return await AddPostAsync(actualRequest);
-                }
-                    
                 case "POST_GET_BY_ID":
                     return await GetPostByIdAsync(actualRequest);
                 case "POST_GET_FOR_USER":
@@ -59,9 +56,10 @@ namespace SEP3_Tier3.SocketControllers.Implementation
 
         private async Task<ActualRequest> AddPostAsync(ActualRequest actualRequest)
         {
-            Console.WriteLine("Post in post socket");
             Request request = actualRequest.Request;
             PostShortVersion post = JsonSerializer.Deserialize<PostShortVersion>(request.Argument.ToString());
+            post.HasImage = actualRequest.Images != null;
+            Console.WriteLine("Post Sockets adding post " + post.Title);
             int result = await postRepo.AddPostAsync(post);
             Request responseRequest = new Request
             {
@@ -89,15 +87,19 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         {
             Request request = actualRequest.Request;
             int postId = Convert.ToInt32(request.Argument.ToString());
-            Post post = await postRepo.GetPostByIdAsync(postId);
+            PostSocketsModel post = await postRepo.GetPostByIdAsync(postId);
             Request responseRequest = new Request
             {
                 ActionType = ActionType.POST_GET_BY_ID.ToString(),
                 Argument = JsonSerializer.Serialize(post)
             };
             List<byte[]> images = new List<byte[]>();
+
             if (post != null)
             {
+                var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
+                images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));
+                
                 if (post.HasImage) {
                     var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
                     images.Add(readAvatarFile);
@@ -133,6 +135,12 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             {
                 foreach (var post in posts)
                 {
+                    var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
+                    images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
+                }
+                
+                foreach (var post in posts)
+                {
                     if (post.HasImage) {
                         var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
                         images.Add(readAvatarFile);
@@ -160,6 +168,12 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             List<byte[]> images = new List<byte[]>();
             if (posts != null)
             {
+                foreach (var post in posts)
+                {
+                    var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
+                    images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
+                }
+                
                 foreach (var post in posts)
                 {
                     if (post.HasImage) {
@@ -209,7 +223,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             Console.WriteLine("Deleting post with id " + postId);
             bool response = await postRepo.DeletePostAsync(postId);
             if (response)
-                ImagesUtil.DeleteFile($"{FILE_PATH}/Posts/{postId}.jpg");
+                ImagesUtil.DeleteFile($"{FILE_PATH}/Posts", $"{postId}.jpg");
 
             Request responseRequest = new Request
             {
@@ -301,7 +315,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
             return new ActualRequest
             {
-                Request = request,
+                Request = response,
                 Images = userAvatars
             };
         }
@@ -331,7 +345,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
             return new ActualRequest
             {
-                Request = request,
+                Request = response,
                 Images = userAvatars
             };
         }

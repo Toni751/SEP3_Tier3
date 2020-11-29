@@ -7,7 +7,7 @@ namespace SEP3_Tier3.Repositories
     public interface IPostRepo
     {
         Task<int> AddPostAsync(PostShortVersion post);
-        Task<Post> GetPostByIdAsync(int postId);
+        Task<PostSocketsModel> GetPostByIdAsync(int postId);
         Task<bool> EditPostAsync(PostShortVersion post);
         Task<bool> DeletePostAsync(int postId);
         Task<List<PostShortVersion>> GetLatestPostsForUserAsync(int userId, int offset);

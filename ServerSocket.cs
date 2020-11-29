@@ -108,7 +108,7 @@ namespace SEP3_Tier3
                     Request = readFromClient
                 };
             }
-
+            
             ActualRequest requestResponse;
             if (actualRequest.Request.ActionType.StartsWith("USER"))
                 requestResponse = await socketFactory.UserSocket.HandleClientRequest(actualRequest);

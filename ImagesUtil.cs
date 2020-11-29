@@ -58,12 +58,24 @@ namespace SEP3_Tier3
             }
         }
 
-        public static void DeleteFile(string path)
+        public static void DeleteFile(string path, string fileName)
         {
-            DirectoryInfo directoryInfo = new DirectoryInfo(path);
-            var file = directoryInfo.GetFiles()[0];
-            file.Delete();
-            Console.WriteLine("Deleting file " + file.Name);
+            try {
+                DirectoryInfo directoryInfo = new DirectoryInfo(path);
+                foreach (var file in directoryInfo.GetFiles())
+                {
+                    Console.WriteLine("File name is " + file.Name);
+                    if (file.Name.Equals(fileName))
+                    {
+                        file.Delete();
+                        Console.WriteLine("Deleting file " + file.Name);
+                    }
+                    
+                }
+            }
+            catch (Exception e) {
+                Console.WriteLine("Could not delete file with path " + path);
+            }
         }
     }
 }

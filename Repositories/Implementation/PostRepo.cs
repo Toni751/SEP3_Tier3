@@ -33,16 +33,33 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public async Task<Post> GetPostByIdAsync(int postId)
+        public async Task<PostSocketsModel> GetPostByIdAsync(int postId)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                
                 Post post = await ctx.Posts
-                    .Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == postId);
+                    .Include(p => p.Comments)
+                    .Include(p => p.Owner)
+                    .FirstOrDefaultAsync(p => p.Id == postId);
                 
-                return post;
-
+                if (post == null)
+                    return null;
+                
+                UserShortVersion owner = new UserShortVersion
+                {
+                    UserId = post.Owner.Id,
+                    UserFullName = post.Owner.Name,
+                };
+                return new PostSocketsModel
+                {
+                    Id = post.Id,
+                    Title = post.Title,
+                    Content = post.Content,
+                    Owner = owner,
+                    TimeStamp = post.TimeStamp,
+                    Comments = post.Comments,
+                    HasImage = post.HasImage
+                };
             }
         }
 
@@ -88,14 +105,22 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                List<Post> postsDb = ctx.Posts.Where(p => 
-                    p.Owner.Id == userId || IsFriends(userId, p.Owner.Id))
-                    .OrderByDescending(p => p.TimeStamp).ToList();
+                List<int> userIds = GetFriendsIdsForUserWithUserId(userId);
+                List<Post> postsDb = new List<Post>();
 
-                if (postsDb.Count < offset)
+                foreach (var id in userIds)
+                {
+                    Post post = await ctx.Posts.Where(p => p.Owner.Id == id)
+                        .Include(p => p.Owner).FirstOrDefaultAsync();
+                    if (post != null)
+                        postsDb.Add(post);
+                }
+
+                var postsDbSorted = postsDb.OrderByDescending(p => p.TimeStamp).ToList();
+                if (postsDbSorted.Count < offset)
                     return null;
 
-                return GetPosts(offset, postsDb);
+                return GetPosts(offset, postsDbSorted);
             }
         }
 
@@ -104,6 +129,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 List<Post> postsDb = ctx.Posts.Where(p => p.Owner.Id == userId)
+                    .Include(p => p.Owner)
                     .OrderByDescending(p => p.TimeStamp).ToList();
                 
                 if (postsDb.Count < offset)
@@ -171,7 +197,8 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                Post post = await ctx.Posts.FirstAsync(p => p.Id == comment.PostId);
+                Post post = await ctx.Posts.Where(p => p.Id == comment.PostId)
+                    .Include(p => p.Comments).FirstAsync();
                 User owner = await ctx.Users.FirstAsync(u => u.Id == comment.OwnerId);
                 Comment commentDb = new Comment
                 {
@@ -183,7 +210,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                 ctx.Posts.Update(post);
                 await ctx.Comments.AddAsync(commentDb);
                 await ctx.SaveChangesAsync();
-                return ctx.Comments.Last().Id;
+                return ctx.Comments.Max(c => c.Id);
             }
         }
 
@@ -208,7 +235,9 @@ namespace SEP3_Tier3.Repositories.Implementation
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 Post post = await ctx.Posts.Where(p => p.Id == postId)
-                    .Include(p => p.Comments).FirstAsync();
+                    .Include(p => p.Comments)
+                    .ThenInclude(c => c.Owner)
+                    .Include(p => p.Owner).FirstAsync();
                 if (post.Comments != null && post.Comments.Any())
                 {
                     List<CommentSockets> comments = new List<CommentSockets>();
@@ -283,7 +312,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                     if(i >= postsDb.Count)
                         break;
 
-                    UserShortVersion owner = new UserShortVersion {
+                    var owner = new UserShortVersion {
                         UserId = postsDb[i].Owner.Id,
                         UserFullName = postsDb[i].Owner.Name
                     };
@@ -300,7 +329,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                 foreach (var post in posts)
                 {
                     int countComments = ctx.Posts.Where(p => p.Id == post.Id)
-                        .Select(p => p.Comments).Count();
+                        .Include(p => p.Comments).First().Comments.Count;
                     Console.WriteLine("Post " + post.Id + " has " + countComments + " comments");
                     post.NumberOfComments = countComments;
 
@@ -325,6 +354,22 @@ namespace SEP3_Tier3.Repositories.Implementation
                     UserFullName = user.Name,
                     AccountType = accountType
                 };
+            }
+        }
+
+        private List<int> GetFriendsIdsForUserWithUserId(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<int> userIds = new List<int>();
+                userIds.Add(userId);
+                List<int> friendsFirst = ctx.Friendships.Where(fr => fr.FirstUserId == userId)
+                    .Select(fr => fr.SecondUserId).ToList();
+                userIds.AddRange(friendsFirst);
+                List<int> friendsSecond = ctx.Friendships.Where(fr => fr.SecondUserId == userId)
+                    .Select(fr => fr.FirstUserId).ToList();
+                userIds.AddRange(friendsSecond);
+                return userIds;
             }
         }
     }

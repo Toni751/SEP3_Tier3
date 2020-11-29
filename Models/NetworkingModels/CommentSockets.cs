@@ -5,6 +5,7 @@ namespace SEP3_Tier3.Models
 {
     public class CommentSockets
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
         
         [JsonPropertyName("owner")]
