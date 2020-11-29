@@ -21,7 +21,7 @@ namespace SEP3_T3.Persistance
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseMySQL("server=localhost;port=3606;database=sep3;user=root;password=29312112");
+            optionsBuilder.UseMySQL("server=localhost;port=3306;database=sep3;user=root;password=password");
         }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)

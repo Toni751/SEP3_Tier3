@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
     public class Comment
     {
+        [JsonPropertyName("id")]
         public int Id { get; set; }
         
         [JsonPropertyName("owner")]
@@ -15,6 +17,6 @@ namespace SEP3_Tier3.Models
         public string Content { get; set; }
         
         [JsonPropertyName("timeStamp")]
-        public string TimeStamp { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

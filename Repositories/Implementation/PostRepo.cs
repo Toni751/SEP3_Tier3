@@ -124,7 +124,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public async Task<List<PostShortVersion>> GetLatestPostsByUser(int userId, int offset)
+        public async Task<List<int>> GetLatestPostsByUser(int userId, int offset)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
@@ -134,8 +134,15 @@ namespace SEP3_Tier3.Repositories.Implementation
                 
                 if (postsDb.Count < offset)
                     return null;
+                
+                List<int> postIds = new List<int>();
+                foreach (var post in postsDb)
+                {
+                    postIds.Add(post.Id);
+                }
 
-                return GetPosts(offset, postsDb);
+                return postIds;
+                //return GetPosts(offset, postsDb);
             }
         }
 
@@ -203,7 +210,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                 Comment commentDb = new Comment
                 {
                     Content = comment.Content,
-                    TimeStamp = DateTime.Now.ToString(),
+                    TimeStamp = DateTime.Now,
                     Owner = owner
                 };
                 post.Comments.Add(commentDb);
@@ -252,7 +259,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                          Id = postComment.Id,
                          Owner = owner,
                          Content = postComment.Content,
-                         TimeStamp = postComment.TimeStamp
+                         TimeStamp = postComment.TimeStamp.ToString()
                         });
                     }
 

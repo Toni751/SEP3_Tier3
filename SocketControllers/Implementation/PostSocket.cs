@@ -159,34 +159,35 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         {
             Request request = actualRequest.Request;
             List<int> ints = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
-            List<PostShortVersion> posts = await postRepo.GetLatestPostsByUser(ints[0], ints[1]);
+            List<int> posts = await postRepo.GetLatestPostsByUser(ints[0], ints[1]);
             Request responseRequest = new Request
             {
                 ActionType = ActionType.POST_GET_BY_USER.ToString(),
                 Argument = JsonSerializer.Serialize(posts)
             };
             List<byte[]> images = new List<byte[]>();
-            if (posts != null)
-            {
-                foreach (var post in posts)
-                {
-                    var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
-                    images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
-                }
-                
-                foreach (var post in posts)
-                {
-                    if (post.HasImage) {
-                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
-                        images.Add(readAvatarFile);
-                    }
-                }
-                
-            }
+            // if (posts != null)
+            // {
+            //     foreach (var post in posts)
+            //     {
+            //         var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
+            //         images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
+            //     }
+            //     
+            //     foreach (var post in posts)
+            //     {
+            //         if (post.HasImage) {
+            //             var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
+            //             images.Add(readAvatarFile);
+            //         }
+            //     }
+            //     
+            // }
             return new ActualRequest
             {
                 Request = responseRequest,
-                Images = images
+                Images = null
+                //Images = images
             };
         }
 
