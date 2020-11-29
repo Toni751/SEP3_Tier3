@@ -39,6 +39,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             {
                 Post post = await ctx.Posts
                     .Include(p => p.Comments)
+                    .ThenInclude(c => c.Owner)
                     .Include(p => p.Owner)
                     .FirstOrDefaultAsync(p => p.Id == postId);
                 
@@ -50,6 +51,29 @@ namespace SEP3_Tier3.Repositories.Implementation
                     UserId = post.Owner.Id,
                     UserFullName = post.Owner.Name,
                 };
+                int countComments = ctx.Posts.Where(p => p.Id == post.Id)
+                    .Include(p => p.Comments).First().Comments.Count;
+                Console.WriteLine("Post " + post.Id + " has " + countComments + " comments");
+
+                int countLikes = ctx.PostActions.Count(pa => pa.PostId == post.Id && pa.IsLike);
+                Console.WriteLine("Post " + post.Id + " has " + countLikes + " likes");
+                
+                List<CommentSockets> comments = new List<CommentSockets>();
+                foreach (var comment in post.Comments)
+                {
+                    UserShortVersion commentOwner = new UserShortVersion
+                    {
+                        UserId = comment.Owner.Id,
+                        UserFullName = comment.Owner.Name
+                    };
+                    comments.Add(new CommentSockets
+                    {
+                        Id = comment.Id,
+                        Content = comment.Content,
+                        Owner = commentOwner, 
+                        TimeStamp = comment.TimeStamp
+                    });
+                }
                 return new PostSocketsModel
                 {
                     Id = post.Id,
@@ -57,8 +81,10 @@ namespace SEP3_Tier3.Repositories.Implementation
                     Content = post.Content,
                     Owner = owner,
                     TimeStamp = post.TimeStamp,
-                    Comments = post.Comments,
-                    HasImage = post.HasImage
+                    Comments = comments,
+                    HasImage = post.HasImage,
+                    NumberOfComments = countComments,
+                    NumberOfLikes = countLikes
                 };
             }
         }
@@ -215,9 +241,9 @@ namespace SEP3_Tier3.Repositories.Implementation
                 };
                 post.Comments.Add(commentDb);
                 ctx.Posts.Update(post);
-                await ctx.Comments.AddAsync(commentDb);
+                await ctx.Comment.AddAsync(commentDb);
                 await ctx.SaveChangesAsync();
-                return ctx.Comments.Max(c => c.Id);
+                return ctx.Comment.Max(c => c.Id);
             }
         }
 
@@ -225,9 +251,9 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                Comment comment = await ctx.Comments.FirstAsync(c => c.Id == commentId);
+                Comment comment = await ctx.Comment.FirstAsync(c => c.Id == commentId);
                 try {
-                    ctx.Comments.Remove(comment);
+                    ctx.Comment.Remove(comment);
                     await ctx.SaveChangesAsync();
                     return true;
                 }
@@ -259,7 +285,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                          Id = postComment.Id,
                          Owner = owner,
                          Content = postComment.Content,
-                         TimeStamp = postComment.TimeStamp.ToString()
+                         TimeStamp = postComment.TimeStamp
                         });
                     }
 

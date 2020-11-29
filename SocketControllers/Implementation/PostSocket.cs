@@ -108,7 +108,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 if (post.Comments != null && post.Comments.Count > 0) {
                     foreach (var comment in post.Comments)
                     {
-                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{comment.Owner.Id}/avatar.jpg");
+                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{comment.Owner.UserId}/avatar.jpg");
                         images.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
                     }
                 }

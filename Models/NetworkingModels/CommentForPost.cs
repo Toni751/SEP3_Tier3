@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
@@ -16,6 +17,6 @@ namespace SEP3_Tier3.Models
         public string Content { get; set; }
         
         [JsonPropertyName("timeStamp")]
-        public string TimeStamp { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }
