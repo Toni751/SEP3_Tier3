@@ -17,5 +17,7 @@ namespace SEP3_Tier3.Repositories
         Task<int> RemoveFriendshipAsync(ModelActionSockets modelActionSockets);
         Task<int> PostPageRatingAsync(ModelActionSockets modelActionSockets);
         Task<bool> DeleteNotificationAsync(int notificationId);
+        List<int> GetPostIdsForUser(int userId);
+        List<SearchBarUser> GetUsersByFilter(string filterString);
     }
 }

@@ -81,29 +81,29 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         private async Task<ActualRequest> GetPosts(ActualRequest actualRequest)
         {
             List<int> paginationInts = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
-            List<PostShortVersion> posts = await adminRepo.GetAdminPostsAsync(paginationInts[0], paginationInts[1]);
+            List<int> postIds = await adminRepo.GetAdminPostsAsync(paginationInts[0], paginationInts[1]);
             Request request = new Request
             {
                 ActionType = ActionType.ADMIN_GET_POSTS.ToString(),
-                Argument = JsonSerializer.Serialize(posts)
+                Argument = JsonSerializer.Serialize(postIds)
             };
-            List<byte[]> postImages = new List<byte[]>();
-            if (posts != null && posts.Count > 0) {
-                foreach (var post in posts) {
-                    try {
-                        var readImageFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
-                        postImages.Add(ImagesUtil.ResizeImage(readImageFile, 50, 50));
-                    }
-                    catch (Exception e) {
-                        Console.WriteLine("No image found for post " + post.Id);
-                    }
-                }
-            }
+            // List<byte[]> postImages = new List<byte[]>();
+            // if (posts != null && posts.Count > 0) {
+            //     foreach (var post in posts) {
+            //         try {
+            //             var readImageFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
+            //             postImages.Add(ImagesUtil.ResizeImage(readImageFile, 50, 50));
+            //         }
+            //         catch (Exception e) {
+            //             Console.WriteLine("No image found for post " + post.Id);
+            //         }
+            //     }
+            // }
 
             return new ActualRequest
             {
                 Request = request,
-                Images = postImages
+                Images = null
             };
         }
     }

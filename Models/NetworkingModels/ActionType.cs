@@ -19,6 +19,7 @@ namespace SEP3_Tier3.Models
         USER_RATE_PAGE,
         USER_REPORT,
         USER_DELETE_NOTIFICATION,
+        USER_FILTER,
         POST_CREATE,
         POST_GET_BY_ID,
         POST_GET_FOR_USER,

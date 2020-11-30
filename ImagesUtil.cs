@@ -7,7 +7,7 @@ namespace SEP3_Tier3
 {
     public class ImagesUtil
     {
-        public const string FILE_PATH = "C:/Users/Przemo/RiderProjects/Images";
+        public const string FILE_PATH = "C:/Users/Toni/RiderProjects/Images";
 
         public static byte[] ResizeImage(byte[] initialImage, int width, int height)
         {

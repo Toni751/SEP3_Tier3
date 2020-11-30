@@ -36,7 +36,8 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("profileBackground")]
         public byte[] ProfileBackground { get; set; }
         
-        // 0: isFriend, 1: isFriendRequest, 2: isReport, 3: isShareTrainings, 4: isShareDiets, 5: isFollowPage
+        // 0: isFriend, 1: isYouSentHimFriendRequest, 2: isYouReportedHim, 3: isHeSharedTrainingsWithYou,
+        // 4: isHeSharedDietsWithYou,5: isYouFollowPage, 6: isHeSentYouFriendRequest
         [JsonPropertyName("userStatus")]
         public bool[] UserStatus { get; set; }
     }

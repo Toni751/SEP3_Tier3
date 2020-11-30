@@ -89,27 +89,35 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                bool[] bools = new bool[6];
+                bool[] bools = new bool[7];
                 bool areFriends = ctx.Friendships.Any
                 (fr => fr.FirstUserId == senderId && fr.SecondUserId == receiverId
                        || fr.FirstUserId == receiverId && fr.SecondUserId == senderId);
                 bools[0] = areFriends;
                 UserAction userAction = await ctx.UserActions.FirstOrDefaultAsync
                     (ua => ua.SenderId == senderId && ua.ReceiverId == receiverId);
-                if (userAction != null)
-                {
+                if (userAction != null) {
                     bools[1] = userAction.IsFriendRequest;
                     bools[2] = userAction.IsReport;
-                    bools[3] = userAction.IsShareTrainings;
-                    bools[4] = userAction.IsShareDiets;
                     bools[5] = userAction.IsFollowPage;
                 }
-                else
-                {
-                    for (int i = 1; i < bools.Length; i++)
-                    {
-                        bools[i] = false;
-                    }
+                else {
+                    bools[1] = false;
+                    bools[2] = false;
+                    bools[5] = false;
+                }
+
+                userAction = await ctx.UserActions.FirstOrDefaultAsync(ua =>
+                    ua.SenderId == receiverId && ua.ReceiverId == senderId);
+                if (userAction == null) {
+                    bools[3] = false;
+                    bools[4] = false;
+                    bools[6] = false;
+                }
+                else {
+                    bools[3] = userAction.IsShareTrainings;
+                    bools[4] = userAction.IsShareDiets;
+                    bools[6] = userAction.IsFriendRequest;
                 }
 
                 User user = await ctx.Users.Where(u => u.Id == receiverId)
@@ -353,6 +361,33 @@ namespace SEP3_Tier3.Repositories.Implementation
                 {
                     return false;
                 }
+            }
+        }
+
+        public List<int> GetPostIdsForUser(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                return ctx.Posts.Where(p => p.Owner.Id == userId)
+                    .Select(p => p.Id).ToList();
+            }
+        }
+
+        public List<SearchBarUser> GetUsersByFilter(string filterString)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<User> usersDb = ctx.Users.Where(u => u.Name.StartsWith(filterString)).ToList();
+                List<SearchBarUser> users = new List<SearchBarUser>();
+                foreach (var user in usersDb)
+                {
+                    users.Add(new SearchBarUser {
+                        UserId = user.Id,
+                        FullName = user.Name
+                    });
+                }
+
+                return users;
             }
         }
     }

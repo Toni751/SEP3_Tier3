@@ -33,13 +33,13 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public async Task<PostSocketsModel> GetPostByIdAsync(int postId)
+        public async Task<PostShortVersion> GetPostByIdAsync(int postId, int userId)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 Post post = await ctx.Posts
-                    .Include(p => p.Comments)
-                    .ThenInclude(c => c.Owner)
+                    // .Include(p => p.Comments)
+                    // .ThenInclude(c => c.Owner)
                     .Include(p => p.Owner)
                     .FirstOrDefaultAsync(p => p.Id == postId);
                 
@@ -57,34 +57,47 @@ namespace SEP3_Tier3.Repositories.Implementation
 
                 int countLikes = ctx.PostActions.Count(pa => pa.PostId == post.Id && pa.IsLike);
                 Console.WriteLine("Post " + post.Id + " has " + countLikes + " likes");
-                
-                List<CommentSockets> comments = new List<CommentSockets>();
-                foreach (var comment in post.Comments)
-                {
-                    UserShortVersion commentOwner = new UserShortVersion
-                    {
-                        UserId = comment.Owner.Id,
-                        UserFullName = comment.Owner.Name
-                    };
-                    comments.Add(new CommentSockets
-                    {
-                        Id = comment.Id,
-                        Content = comment.Content,
-                        Owner = commentOwner, 
-                        TimeStamp = comment.TimeStamp
-                    });
+
+                PostAction postAction = await ctx.PostActions.FirstOrDefaultAsync(pa =>
+                    pa.PostId == postId && pa.UserId == userId);
+                bool[] postStatus = new bool[2];
+
+                if (postAction == null) {
+                    for (int i = 0; i < postStatus.Length; i++) {
+                        postStatus[i] = false;
+                    }
                 }
-                return new PostSocketsModel
+                else {
+                    postStatus[0] = postAction.IsLike;
+                    postStatus[1] = postAction.IsReport;
+                }
+                // List<CommentSockets> comments = new List<CommentSockets>();
+                // foreach (var comment in post.Comments)
+                // {
+                //     UserShortVersion commentOwner = new UserShortVersion
+                //     {
+                //         UserId = comment.Owner.Id,
+                //         UserFullName = comment.Owner.Name
+                //     };
+                //     comments.Add(new CommentSockets
+                //     {
+                //         Id = comment.Id,
+                //         Content = comment.Content,
+                //         Owner = commentOwner, 
+                //         TimeStamp = comment.TimeStamp
+                //     });
+                // }
+                return new PostShortVersion
                 {
                     Id = post.Id,
                     Title = post.Title,
                     Content = post.Content,
                     Owner = owner,
                     TimeStamp = post.TimeStamp,
-                    Comments = comments,
                     HasImage = post.HasImage,
                     NumberOfComments = countComments,
-                    NumberOfLikes = countLikes
+                    NumberOfLikes = countLikes,
+                    PostStatus = postStatus
                 };
             }
         }
@@ -127,7 +140,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public async Task<List<PostShortVersion>> GetLatestPostsForUserAsync(int userId, int offset)
+        public List<int> GetLatestPostsForUserAsync(int userId, int offset)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
@@ -136,38 +149,61 @@ namespace SEP3_Tier3.Repositories.Implementation
 
                 foreach (var id in userIds)
                 {
-                    Post post = await ctx.Posts.Where(p => p.Owner.Id == id)
-                        .Include(p => p.Owner).FirstOrDefaultAsync();
-                    if (post != null)
-                        postsDb.Add(post);
+                    try {
+                        var posts = ctx.Posts.Where(p => p.Owner.Id == id).ToList();
+                       postsDb.AddRange(posts);
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine("No posts found by user " + id);
+                    }
                 }
 
-                var postsDbSorted = postsDb.OrderByDescending(p => p.TimeStamp).ToList();
-                if (postsDbSorted.Count < offset)
-                    return null;
-
-                return GetPosts(offset, postsDbSorted);
-            }
-        }
-
-        public async Task<List<int>> GetLatestPostsByUser(int userId, int offset)
-        {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-                List<Post> postsDb = ctx.Posts.Where(p => p.Owner.Id == userId)
-                    .Include(p => p.Owner)
-                    .OrderByDescending(p => p.TimeStamp).ToList();
+                var postsDbSorted = postsDb.OrderByDescending(p => p.TimeStamp)
+                    .Select(p => p.Id).ToList();
                 
-                if (postsDb.Count < offset)
+                if (postsDbSorted.Count <= offset)
                     return null;
                 
                 List<int> postIds = new List<int>();
-                foreach (var post in postsDb)
+                for (int i = offset; i < offset + 5; i++)
                 {
-                    postIds.Add(post.Id);
+                    if(i >= postsDb.Count)
+                        break;
+                    
+                    postIds.Add(postsDbSorted[i]);
                 }
-
                 return postIds;
+                //return GetPosts(offset, postsDbSorted);
+            }
+        }
+
+        public List<int> GetLatestPostsByUser(int userId, int offset)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<int> postsDb = ctx.Posts.Where(p => p.Owner.Id == userId)
+                    .OrderByDescending(p => p.TimeStamp)
+                    .Select(p => p.Id).ToList();
+                
+                if (postsDb.Count <= offset)
+                    return null;
+
+                List<int> postIds = new List<int>();
+                for (int i = offset; i < offset + 5; i++)
+                {
+                    if(i >= postsDb.Count)
+                        break;
+                    
+                    postIds.Add(postsDb[i]);
+                }
+                return postIds;
+                // List<int> postIds = new List<int>();
+                // foreach (var post in postsDb)
+                // {
+                //     postIds.Add(post.Id);
+                // }
+                //
+                // return postIds;
                 //return GetPosts(offset, postsDb);
             }
         }
@@ -323,72 +359,72 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        private bool IsFriends(int user1Id, int user2Id)
-        {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-                Friendship friendship = ctx.Friendships.FirstOrDefault(fr =>
-                    (fr.FirstUserId == user1Id && fr.SecondUserId == user2Id)
-                    || (fr.FirstUserId == user2Id && fr.SecondUserId == user1Id));
-                
-                return friendship != null;
-            }
-        }
-
-        private List<PostShortVersion> GetPosts(int offset, List<Post> postsDb)
-        {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-                List<PostShortVersion> posts = new List<PostShortVersion>();
-                for (int i = offset; i < offset + 5; i++)
-                {
-                    if(i >= postsDb.Count)
-                        break;
-
-                    var owner = new UserShortVersion {
-                        UserId = postsDb[i].Owner.Id,
-                        UserFullName = postsDb[i].Owner.Name
-                    };
-                    posts.Add(new PostShortVersion {
-                        Id = postsDb[i].Id,
-                        Title = postsDb[i].Title,
-                        Content = postsDb[i].Content,
-                        Owner = owner,
-                        TimeStamp = postsDb[i].TimeStamp,
-                        HasImage = postsDb[i].HasImage
-                    });
-                }
-
-                foreach (var post in posts)
-                {
-                    int countComments = ctx.Posts.Where(p => p.Id == post.Id)
-                        .Include(p => p.Comments).First().Comments.Count;
-                    Console.WriteLine("Post " + post.Id + " has " + countComments + " comments");
-                    post.NumberOfComments = countComments;
-
-                    int countLikes = ctx.PostActions.Count(pa => pa.PostId == post.Id && pa.IsLike);
-                    Console.WriteLine("Post " + post.Id + " has " + countLikes + " likes");
-                    post.NumberOfLikes = countLikes;
-                }
-
-                return posts;
-            }
-        }
-        
-        private UserShortVersion GetUserShortVersionById(int id)
-        {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-                User user = ctx.Users.First(u => u.Id == id);
-                string accountType = user.Address != null ? "PageOwner" : "RegularUser";
-                return new UserShortVersion
-                {
-                    UserId = user.Id,
-                    UserFullName = user.Name,
-                    AccountType = accountType
-                };
-            }
-        }
+        // private bool IsFriends(int user1Id, int user2Id)
+        // {
+        //     using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+        //     {
+        //         Friendship friendship = ctx.Friendships.FirstOrDefault(fr =>
+        //             (fr.FirstUserId == user1Id && fr.SecondUserId == user2Id)
+        //             || (fr.FirstUserId == user2Id && fr.SecondUserId == user1Id));
+        //         
+        //         return friendship != null;
+        //     }
+        // }
+        //
+        // private List<PostShortVersion> GetPosts(int offset, List<Post> postsDb)
+        // {
+        //     using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+        //     {
+        //         List<PostShortVersion> posts = new List<PostShortVersion>();
+        //         for (int i = offset; i < offset + 5; i++)
+        //         {
+        //             if(i >= postsDb.Count)
+        //                 break;
+        //
+        //             var owner = new UserShortVersion {
+        //                 UserId = postsDb[i].Owner.Id,
+        //                 UserFullName = postsDb[i].Owner.Name
+        //             };
+        //             posts.Add(new PostShortVersion {
+        //                 Id = postsDb[i].Id,
+        //                 Title = postsDb[i].Title,
+        //                 Content = postsDb[i].Content,
+        //                 Owner = owner,
+        //                 TimeStamp = postsDb[i].TimeStamp,
+        //                 HasImage = postsDb[i].HasImage
+        //             });
+        //         }
+        //
+        //         foreach (var post in posts)
+        //         {
+        //             int countComments = ctx.Posts.Where(p => p.Id == post.Id)
+        //                 .Include(p => p.Comments).First().Comments.Count;
+        //             Console.WriteLine("Post " + post.Id + " has " + countComments + " comments");
+        //             post.NumberOfComments = countComments;
+        //
+        //             int countLikes = ctx.PostActions.Count(pa => pa.PostId == post.Id && pa.IsLike);
+        //             Console.WriteLine("Post " + post.Id + " has " + countLikes + " likes");
+        //             post.NumberOfLikes = countLikes;
+        //         }
+        //
+        //         return posts;
+        //     }
+        // }
+        //
+        // private UserShortVersion GetUserShortVersionById(int id)
+        // {
+        //     using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+        //     {
+        //         User user = ctx.Users.First(u => u.Id == id);
+        //         string accountType = user.Address != null ? "PageOwner" : "RegularUser";
+        //         return new UserShortVersion
+        //         {
+        //             UserId = user.Id,
+        //             UserFullName = user.Name,
+        //             AccountType = accountType
+        //         };
+        //     }
+        // }
 
         private List<int> GetFriendsIdsForUserWithUserId(int userId)
         {

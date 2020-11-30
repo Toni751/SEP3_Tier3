@@ -31,9 +31,9 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 case "POST_GET_BY_ID":
                     return await GetPostByIdAsync(actualRequest);
                 case "POST_GET_FOR_USER":
-                    return await GetPostsForUserAsync(actualRequest);
+                    return GetPostsForUserAsync(actualRequest);
                 case "POST_GET_BY_USER":
-                    return await GetPostsByUserAsync(actualRequest);
+                    return GetPostsByUserAsync(actualRequest);
                 case "POST_EDIT":
                     return await UpdatePostAsync(actualRequest);
                 case "POST_DELETE":
@@ -86,8 +86,8 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         private async Task<ActualRequest> GetPostByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
-            int postId = Convert.ToInt32(request.Argument.ToString());
-            PostSocketsModel post = await postRepo.GetPostByIdAsync(postId);
+            List<int> ints = JsonSerializer.Deserialize<List<int>>(request.Argument.ToString());
+            PostShortVersion post = await postRepo.GetPostByIdAsync(ints[0], ints[1]);
             Request responseRequest = new Request
             {
                 ActionType = ActionType.POST_GET_BY_ID.ToString(),
@@ -105,13 +105,13 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     images.Add(readAvatarFile);
                 }
 
-                if (post.Comments != null && post.Comments.Count > 0) {
-                    foreach (var comment in post.Comments)
-                    {
-                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{comment.Owner.UserId}/avatar.jpg");
-                        images.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
-                    }
-                }
+                // if (post.Comments != null && post.Comments.Count > 0) {
+                //     foreach (var comment in post.Comments)
+                //     {
+                //         var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{comment.Owner.UserId}/avatar.jpg");
+                //         images.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
+                //     }
+                // }
             }
             return new ActualRequest
             {
@@ -120,52 +120,52 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
-        private async Task<ActualRequest> GetPostsForUserAsync(ActualRequest actualRequest)
+        private ActualRequest GetPostsForUserAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
             List<int> ints = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
-            List<PostShortVersion> posts = await postRepo.GetLatestPostsForUserAsync(ints[0], ints[1]);
+            List<int> postIds = postRepo.GetLatestPostsForUserAsync(ints[0], ints[1]);
             Request responseRequest = new Request
             {
                 ActionType = ActionType.POST_GET_FOR_USER.ToString(),
-                Argument = JsonSerializer.Serialize(posts)
+                Argument = JsonSerializer.Serialize(postIds)
             };
-            List<byte[]> images = new List<byte[]>();
-            if (posts != null)
-            {
-                foreach (var post in posts)
-                {
-                    var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
-                    images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
-                }
-                
-                foreach (var post in posts)
-                {
-                    if (post.HasImage) {
-                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
-                        images.Add(readAvatarFile);
-                    }
-                }
-                
-            }
+            // List<byte[]> images = new List<byte[]>();
+            // if (posts != null)
+            // {
+            //     foreach (var post in posts)
+            //     {
+            //         var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
+            //         images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
+            //     }
+            //     
+            //     foreach (var post in posts)
+            //     {
+            //         if (post.HasImage) {
+            //             var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
+            //             images.Add(readAvatarFile);
+            //         }
+            //     }
+            //     
+            // }
             return new ActualRequest
             {
                 Request = responseRequest,
-                Images = images
+                Images = null
             };
         }
 
-        private async Task<ActualRequest> GetPostsByUserAsync(ActualRequest actualRequest)
+        private ActualRequest GetPostsByUserAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
             List<int> ints = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
-            List<int> posts = await postRepo.GetLatestPostsByUser(ints[0], ints[1]);
+            List<int> postIds = postRepo.GetLatestPostsByUser(ints[0], ints[1]);
             Request responseRequest = new Request
             {
                 ActionType = ActionType.POST_GET_BY_USER.ToString(),
-                Argument = JsonSerializer.Serialize(posts)
+                Argument = JsonSerializer.Serialize(postIds)
             };
-            List<byte[]> images = new List<byte[]>();
+            //List<byte[]> images = new List<byte[]>();
             // if (posts != null)
             // {
             //     foreach (var post in posts)

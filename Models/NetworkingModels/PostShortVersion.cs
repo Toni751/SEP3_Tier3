@@ -31,5 +31,9 @@ namespace SEP3_Tier3.Models
         
         [JsonPropertyName("hasImage")]
         public bool HasImage { get; set; }
+        
+        //0: isLikedByUser, 1: isReportedByUser
+        [JsonPropertyName("postStatus")]
+        public bool[] PostStatus { get; set; }
     }
 }

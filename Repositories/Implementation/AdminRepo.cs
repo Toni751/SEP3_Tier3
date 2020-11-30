@@ -64,7 +64,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                     return true;
             return false;
         }
-        public async Task<List<PostShortVersion>> GetAdminPostsAsync(int limit, int offset)
+        public async Task<List<int>> GetAdminPostsAsync(int limit, int offset)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
@@ -97,24 +97,25 @@ namespace SEP3_Tier3.Repositories.Implementation
                 if (offset > postReportList.Count)
                     return null;
 
-                List<PostShortVersion> posts = new List<PostShortVersion>();
+                //List<PostShortVersion> posts = new List<PostShortVersion>();
+                List<int> postIds = new List<int>();
                 for (int i = offset; i < offset + limit; i++)
                 {
                     if (i >= postReportList.Count)
                         break;
 
-                    Post post = await ctx.Posts.FirstAsync(p => p.Id == postReportList[i].ReportPostId);
-                    posts.Add(new PostShortVersion
-                    {
-                        Id = post.Id,
-                        Title = post.Title,
-                        Content = post.Content,
-                       // Owner = GetUserShortVersionById(post.Owner.Id),
-                        TimeStamp = post.TimeStamp
-                    });
+                    postIds.Add(postReportList[i].ReportPostId);
+                    // Post post = await ctx.Posts.FirstAsync(p => p.Id == postReportList[i].ReportPostId);
+                    // posts.Add(new PostShortVersion
+                    // {
+                    //     Id = post.Id,
+                    //     Title = post.Title,
+                    //     Content = post.Content,
+                    //    // Owner = GetUserShortVersionById(post.Owner.Id),
+                    //     TimeStamp = post.TimeStamp
+                    // });
                 }
-
-                return posts;
+                return postIds;
             }
         }
 

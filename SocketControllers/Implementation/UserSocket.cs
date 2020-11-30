@@ -47,9 +47,27 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return await PostUserActionAsync(actualRequest);
                 case "USER_DELETE_NOTIFICATION":
                     return await DeleteNotificationAsync(actualRequest);
+                case "USER_FILTER":
+                    return GetUsersByFilter(actualRequest);
                 default:
                     return null;
             }
+        }
+
+        private ActualRequest GetUsersByFilter(ActualRequest actualRequest)
+        {
+            string filterString = actualRequest.Request.Argument.ToString();
+            List<SearchBarUser> filteredUsers = userRepo.GetUsersByFilter(filterString);
+            Request responseRequest = new Request
+            {
+                ActionType = ActionType.USER_FILTER.ToString(),
+                Argument = JsonSerializer.Serialize(filteredUsers)
+            };
+            return new ActualRequest
+            {
+                Request = responseRequest,
+                Images = null
+            };
         }
 
         private async Task<ActualRequest> DeleteNotificationAsync(ActualRequest actualRequest)
@@ -100,9 +118,16 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             Request request = actualRequest.Request;
             int userId = Convert.ToInt32(request.Argument.ToString());
             Console.WriteLine("Deleting user with id " + userId);
+            List<int> postIdsForUser = userRepo.GetPostIdsForUser(userId);
             bool response = await userRepo.DeleteUserAsync(userId);
             if (response)
+            {
                 ImagesUtil.DeleteUserFolder($"{FILE_PATH}/Users/{userId}");
+                foreach (var postId in postIdsForUser)
+                {
+                    ImagesUtil.DeleteFile($"{FILE_PATH}/Posts", $"{postId}.jpg");
+                }
+            }
 
             Request responseRequest = new Request
             {
