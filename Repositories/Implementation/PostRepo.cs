@@ -332,7 +332,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public async Task<List<UserShortVersion>> GetAllLikesForPost(int postId)
+        public List<UserShortVersion> GetAllLikesForPost(int postId)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {

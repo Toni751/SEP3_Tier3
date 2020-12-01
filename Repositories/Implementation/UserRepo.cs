@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using SEP3_T3.Persistance;
+using SEP3_Tier3.Migrations;
 using SEP3_Tier3.Models;
 
 namespace SEP3_Tier3.Repositories.Implementation
@@ -217,15 +218,9 @@ namespace SEP3_Tier3.Repositories.Implementation
                             userAction.IsFriendRequest = (bool) modelActionSockets.Value;
                         else
                             ifNullUserAction.IsFriendRequest = (bool) modelActionSockets.Value;
-                        if ((bool) modelActionSockets.Value) {
-                            await ctx.Notifications.AddAsync(new Notification {
-                                SenderId = modelActionSockets.SenderId,
-                                ReceiverId = modelActionSockets.ReceiverId,
-                                NotificationType = "USER_FRIEND_REQUEST_SEND"
-                            });
-                            await ctx.SaveChangesAsync();
-                            returnId = ctx.Notifications.First(n => n.SenderId == modelActionSockets.SenderId && n.ReceiverId == modelActionSockets.ReceiverId
-                                && n.NotificationType.Equals("USER_FRIEND_REQUEST_SEND")).Id;
+                        if ((bool) modelActionSockets.Value)
+                        {
+                            returnId = await AddNotification("USER_FRIEND_REQUEST_SEND", modelActionSockets.SenderId, modelActionSockets.ReceiverId);
                             Console.WriteLine("Returning notification id: " + returnId);
                         }
                         else {
@@ -265,6 +260,17 @@ namespace SEP3_Tier3.Repositories.Implementation
                             userAction.IsFollowPage = (bool) modelActionSockets.Value;
                         else
                             ifNullUserAction.IsFollowPage = (bool) modelActionSockets.Value;
+                        if ((bool) modelActionSockets.Value)
+                        {
+                            returnId = await AddNotification("USER_FOLLOW_PAGE", modelActionSockets.SenderId, modelActionSockets.ReceiverId);
+                            Console.WriteLine("Returning notification id: " + returnId);
+                        }
+                        else {
+                            Notification notification = await ctx.Notifications.FirstAsync(n =>
+                                n.SenderId == modelActionSockets.SenderId && n.ReceiverId == modelActionSockets.ReceiverId
+                                                                          && n.NotificationType.Equals("USER_FOLLOW_PAGE"));
+                            ctx.Notifications.Remove(notification);
+                        }
                         break;
                     case "USER_REPORT":
                         if (userAction != null)
@@ -295,6 +301,21 @@ namespace SEP3_Tier3.Repositories.Implementation
                 }
 
                 return returnId;
+            }
+        }
+
+        private async Task<int> AddNotification(string notificationType, int senderId, int receiverId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                await ctx.Notifications.AddAsync(new Notification {
+                    SenderId = senderId,
+                    ReceiverId = receiverId,
+                    NotificationType = notificationType
+                });
+                await ctx.SaveChangesAsync();
+                return ctx.Notifications.First(n => n.SenderId == senderId && n.ReceiverId == receiverId
+                    && n.NotificationType.Equals(notificationType)).Id;
             }
         }
 
@@ -377,7 +398,7 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                List<User> usersDb = ctx.Users.Where(u => u.Name.StartsWith(filterString)).ToList();
+                List<User> usersDb = ctx.Users.Where(u => u.Name.ToLower().StartsWith(filterString.ToLower())).ToList();
                 List<SearchBarUser> users = new List<SearchBarUser>();
                 foreach (var user in usersDb)
                 {
@@ -388,6 +409,48 @@ namespace SEP3_Tier3.Repositories.Implementation
                 }
 
                 return users;
+            }
+        }
+
+        public List<UserShortVersion> GetAllGymsInCity(string city)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<User> gymsInCityDb = ctx.Users.Where(u => u.Address != null && u.City.Equals(city)).ToList();
+                List<UserShortVersion> gyms = new List<UserShortVersion>();
+                foreach (var gymDb in gymsInCityDb)
+                {
+                    gyms.Add(new UserShortVersion
+                    {
+                        UserId = gymDb.Id,
+                        UserFullName = gymDb.Name
+                    });
+                }
+
+                return gyms;
+            }
+        }
+
+        public List<NotificationSockets> GetNotificationsForUser(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<Notification> notificationsDb = ctx.Notifications.Where(n => n.ReceiverId == userId).ToList();
+                List<NotificationSockets> notifications = new List<NotificationSockets>();
+                foreach (var notification in notificationsDb)
+                {
+                    string userName = ctx.Users.First(u => u.Id == notification.SenderId).Name;
+                    notifications.Add(new NotificationSockets
+                    {
+                        Id = notification.Id,
+                        ActionType = notification.NotificationType,
+                        ReceiverId = notification.ReceiverId,
+                        SenderId = notification.SenderId,
+                        SenderName = userName
+                    });
+                }
+
+                return notifications;
             }
         }
     }

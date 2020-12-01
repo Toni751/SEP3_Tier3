@@ -46,7 +46,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 case "POST_DELETE_COMMENT":
                     return await DeleteCommentFromPostAsync(actualRequest);
                 case "POST_GET_LIKES":
-                    return await GetAllLikesForPostAsync(actualRequest);
+                    return GetAllLikesForPostAsync(actualRequest);
                 case "POST_GET_COMMENTS":
                     return await GetAllCommentsForPostAsync(actualRequest);
                 default:
@@ -292,11 +292,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
         
-        private async Task<ActualRequest> GetAllLikesForPostAsync(ActualRequest actualRequest)
+        private ActualRequest GetAllLikesForPostAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
             int postId = Convert.ToInt32(request.Argument.ToString());
-            List<UserShortVersion> users = await postRepo.GetAllLikesForPost(postId);
+            List<UserShortVersion> users = postRepo.GetAllLikesForPost(postId);
             Request response = new Request
             {
                 ActionType = ActionType.POST_GET_LIKES.ToString(),

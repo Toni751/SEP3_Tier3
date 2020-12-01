@@ -49,9 +49,57 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return await DeleteNotificationAsync(actualRequest);
                 case "USER_FILTER":
                     return GetUsersByFilter(actualRequest);
+                case "USER_GET_GYMS":
+                    return GetGymsByCity(actualRequest);
+                case "USER_GET_NOTIFICATIONS":
+                    return GetNotificationsForUser(actualRequest);
                 default:
                     return null;
             }
+        }
+
+        private ActualRequest GetNotificationsForUser(ActualRequest actualRequest)
+        {
+            int userId = Convert.ToInt32(actualRequest.Request.Argument.ToString());
+            List<NotificationSockets> notifications = userRepo.GetNotificationsForUser(userId);
+            Request response = new Request
+            {
+                ActionType = ActionType.USER_GET_NOTIFICATIONS.ToString(),
+                Argument = JsonSerializer.Serialize(notifications)
+            };
+            return new ActualRequest
+            {
+                Request = response,
+                Images = null
+            };
+        }
+
+        private ActualRequest GetGymsByCity(ActualRequest actualRequest)
+        {
+            string city = actualRequest.Request.Argument.ToString();
+            List<UserShortVersion> users = userRepo.GetAllGymsInCity(city);
+            Request response = new Request
+            {
+                ActionType = ActionType.USER_GET_GYMS.ToString(),
+                Argument = JsonSerializer.Serialize(users)
+            };
+            List<byte[]> userAvatars = new List<byte[]>();
+            if (users != null && users.Count > 0) {
+                foreach (var user in users) {
+                    try {
+                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{user.UserId}/avatar.jpg");
+                        userAvatars.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine("No avatar found for user " + user.UserId);
+                    }
+                }
+            }
+            return new ActualRequest
+            {
+                Request = response,
+                Images = userAvatars
+            };
         }
 
         private ActualRequest GetUsersByFilter(ActualRequest actualRequest)

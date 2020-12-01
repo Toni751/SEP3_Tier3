@@ -19,5 +19,7 @@ namespace SEP3_Tier3.Repositories
         Task<bool> DeleteNotificationAsync(int notificationId);
         List<int> GetPostIdsForUser(int userId);
         List<SearchBarUser> GetUsersByFilter(string filterString);
+        List<UserShortVersion> GetAllGymsInCity(string city);
+        List<NotificationSockets> GetNotificationsForUser(int userId);
     }
 }

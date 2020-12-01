@@ -20,6 +20,8 @@ namespace SEP3_Tier3.Models
         USER_REPORT,
         USER_DELETE_NOTIFICATION,
         USER_FILTER,
+        USER_GET_GYMS,
+        USER_GET_NOTIFICATIONS,
         POST_CREATE,
         POST_GET_BY_ID,
         POST_GET_FOR_USER,

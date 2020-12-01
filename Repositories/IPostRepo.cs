@@ -16,6 +16,6 @@ namespace SEP3_Tier3.Repositories
         Task<int> AddCommentToPost(CommentForPost comment);
         Task<bool> DeleteCommentFromPost(int commentId);
         Task<List<CommentSockets>> GetAllCommentsForPost(int postId);
-        Task<List<UserShortVersion>> GetAllLikesForPost(int postId);
+        List<UserShortVersion> GetAllLikesForPost(int postId);
     }
 }
