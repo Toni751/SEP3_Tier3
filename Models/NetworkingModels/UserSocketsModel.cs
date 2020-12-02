@@ -40,5 +40,8 @@ namespace SEP3_Tier3.Models
         // 4: isHeSharedDietsWithYou,5: isYouFollowPage, 6: isHeSentYouFriendRequest
         [JsonPropertyName("userStatus")]
         public bool[] UserStatus { get; set; }
+        
+        [JsonPropertyName("relevantFriendsNumber")]
+        public int RelevantFriendsNumber { get; set; }
     }
 }

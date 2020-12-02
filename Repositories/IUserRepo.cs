@@ -21,5 +21,6 @@ namespace SEP3_Tier3.Repositories
         List<SearchBarUser> GetUsersByFilter(string filterString);
         List<UserShortVersion> GetAllGymsInCity(string city);
         List<NotificationSockets> GetNotificationsForUser(int userId);
+        List<UserShortVersion> GetFriendsForUser(int userId, int senderId, int offset);
     }
 }

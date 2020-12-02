@@ -91,9 +91,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 bool[] bools = new bool[7];
-                bool areFriends = ctx.Friendships.Any
-                (fr => fr.FirstUserId == senderId && fr.SecondUserId == receiverId
-                       || fr.FirstUserId == receiverId && fr.SecondUserId == senderId);
+                bool areFriends = UsersAreFriends(senderId, receiverId);
                 bools[0] = areFriends;
                 UserAction userAction = await ctx.UserActions.FirstOrDefaultAsync
                     (ua => ua.SenderId == senderId && ua.ReceiverId == receiverId);
@@ -123,6 +121,10 @@ namespace SEP3_Tier3.Repositories.Implementation
 
                 User user = await ctx.Users.Where(u => u.Id == receiverId)
                     .Include(u => u.Address).FirstAsync();
+
+                int relevantFriendsNumber = areFriends
+                    ? GetTotalNumberOfFriendsForUser(receiverId)
+                    : GetNumberOfCommonFriends(senderId, receiverId);
                 return new UserSocketsModel
                 {
                     Id = user.Id,
@@ -132,8 +134,59 @@ namespace SEP3_Tier3.Repositories.Implementation
                     City = user.City,
                     Score = user.Score,
                     Address = user.Address,
-                    UserStatus = bools
+                    UserStatus = bools,
+                    RelevantFriendsNumber = relevantFriendsNumber
                 };
+            }
+        }
+
+        private bool UsersAreFriends(int firstUserId,int secondUserId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                return ctx.Friendships.Any
+                (fr => fr.FirstUserId == firstUserId && fr.SecondUserId == secondUserId
+                       || fr.FirstUserId == secondUserId && fr.SecondUserId == firstUserId);
+            }
+        }
+        
+        private int GetTotalNumberOfFriendsForUser(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                return ctx.Friendships.Count(fr => fr.FirstUserId == userId || fr.SecondUserId == userId);
+            }
+        }
+        
+        private int GetNumberOfCommonFriends(int firstUserId,int secondUserId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<int> firstUserFriendIds = new List<int>();
+                List<int> temp = ctx.Friendships.Where(fr => fr.FirstUserId == firstUserId)
+                    .Select(fr => fr.SecondUserId).ToList();
+                firstUserFriendIds.AddRange(temp);
+                temp = ctx.Friendships.Where(fr => fr.SecondUserId == firstUserId)
+                    .Select(fr => fr.FirstUserId).ToList();
+                firstUserFriendIds.AddRange(temp);
+                
+                
+                List<int> secondUserFriendIds = new List<int>();
+                temp = ctx.Friendships.Where(fr => fr.FirstUserId == secondUserId)
+                    .Select(fr => fr.SecondUserId).ToList();
+                secondUserFriendIds.AddRange(temp);
+                temp = ctx.Friendships.Where(fr => fr.SecondUserId == secondUserId)
+                    .Select(fr => fr.FirstUserId).ToList();
+                secondUserFriendIds.AddRange(temp);
+
+                int numberOfCommonFriends = 0;
+                foreach (var friendId in firstUserFriendIds)
+                {
+                    if (secondUserFriendIds.Contains(friendId))
+                        numberOfCommonFriends++;
+                }
+
+                return numberOfCommonFriends;
             }
         }
 
@@ -451,6 +504,82 @@ namespace SEP3_Tier3.Repositories.Implementation
                 }
 
                 return notifications;
+            }
+        }
+
+        public List<UserShortVersion> GetFriendsForUser(int userId, int senderId, int offset)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<User> friendsDb;
+                if (UsersAreFriends(userId, senderId) || userId == senderId)
+                    friendsDb = GetFriendListForUser(userId);
+                else
+                    friendsDb = GetCommonFriendsForUsers(userId, senderId);
+
+                if (offset >= friendsDb.Count)
+                    return null;
+
+                List<User> friendsDbSorted = friendsDb.OrderBy(u => u.Name).ToList();
+                List<UserShortVersion> friends = new List<UserShortVersion>();
+                for (int i = offset; i < offset + 10; i++)
+                {
+                    if(i >= friendsDbSorted.Count)
+                        break;
+                    
+                    friends.Add(new UserShortVersion
+                    {
+                        UserId = friendsDbSorted[i].Id,
+                        UserFullName = friendsDbSorted[i].Name
+                    });
+                }
+
+                return friends;
+            }
+        }
+
+        private List<User> GetCommonFriendsForUsers(int firstUserId, int secondUserId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<User> firstUserFriends = new List<User>();
+                List<User> temp = ctx.Friendships.Where(fr => fr.FirstUserId == firstUserId)
+                    .Select(fr => fr.SecondUser).ToList();
+                firstUserFriends.AddRange(temp);
+                temp = ctx.Friendships.Where(fr => fr.SecondUserId == firstUserId)
+                    .Select(fr => fr.FirstUser).ToList();
+                firstUserFriends.AddRange(temp);
+                
+                
+                List<User> secondUserFriends = new List<User>();
+                temp = ctx.Friendships.Where(fr => fr.FirstUserId == secondUserId)
+                    .Select(fr => fr.SecondUser).ToList();
+                secondUserFriends.AddRange(temp);
+                temp = ctx.Friendships.Where(fr => fr.SecondUserId == secondUserId)
+                    .Select(fr => fr.FirstUser).ToList();
+                secondUserFriends.AddRange(temp);
+
+                List<User> commonFriends = new List<User>();
+                foreach (var friend in firstUserFriends)
+                {
+                    if (secondUserFriends.Contains(friend))
+                        commonFriends.Add(friend);
+                }
+
+                return commonFriends;
+            }
+        }
+
+        private List<User> GetFriendListForUser(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<User> friendsDb = ctx.Friendships.Where(fr => fr.FirstUserId == userId)
+                    .Select(fr => fr.SecondUser).ToList();
+                List<User> temp = ctx.Friendships.Where(fr => fr.SecondUserId == userId)
+                    .Select(fr => fr.FirstUser).ToList();
+                friendsDb.AddRange(temp);
+                return friendsDb;
             }
         }
     }

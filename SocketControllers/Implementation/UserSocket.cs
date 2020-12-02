@@ -53,9 +53,39 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return GetGymsByCity(actualRequest);
                 case "USER_GET_NOTIFICATIONS":
                     return GetNotificationsForUser(actualRequest);
+                case "USER_GET_FRIENDS":
+                    return GetFriendsForUser(actualRequest);
                 default:
                     return null;
             }
+        }
+
+        private ActualRequest GetFriendsForUser(ActualRequest actualRequest)
+        {
+            List<int> integers = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
+            List<UserShortVersion> friends = userRepo.GetFriendsForUser(integers[0], integers[1], integers[2]);
+            Request response = new Request
+            {
+                ActionType = ActionType.USER_GET_FRIENDS.ToString(),
+                Argument = JsonSerializer.Serialize(friends)
+            };
+            List<byte[]> userAvatars = new List<byte[]>();
+            if (friends != null && friends.Count > 0) {
+                foreach (var friend in friends) {
+                    try {
+                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{friend.UserId}/avatar.jpg");
+                        userAvatars.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine("No avatar found for user " + friend.UserId);
+                    }
+                }
+            }
+            return new ActualRequest
+            {
+                Request = response,
+                Images = userAvatars
+            };
         }
 
         private ActualRequest GetNotificationsForUser(ActualRequest actualRequest)

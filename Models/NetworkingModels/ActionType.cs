@@ -22,6 +22,7 @@ namespace SEP3_Tier3.Models
         USER_FILTER,
         USER_GET_GYMS,
         USER_GET_NOTIFICATIONS,
+        USER_GET_FRIENDS,
         POST_CREATE,
         POST_GET_BY_ID,
         POST_GET_FOR_USER,
