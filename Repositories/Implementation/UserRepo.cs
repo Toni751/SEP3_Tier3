@@ -48,8 +48,9 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                User user = await ctx.Users.FirstOrDefaultAsync(u =>
-                    u.Email.Equals(email) && u.Password.Equals(password));
+                User user = await ctx.Users.Where(u => u.Email.Equals(email) && u.Password.Equals(password))
+                    .Include(u => u.Address).FirstOrDefaultAsync();
+                
                 if (user != null)
                 {
                     string accountType = user.Address != null ? "PageOwner" : "RegularUser";
