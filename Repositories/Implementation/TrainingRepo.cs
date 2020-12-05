@@ -21,8 +21,8 @@ namespace SEP3_Tier3.Repositories.Implementation
                     User owner = await ctx.Users.FirstAsync(u => u.Id == training.Owner.UserId);
                     Training trainingDb = new Training
                     {
-                        Title = training.Title,
-                        TimeStamp = DateTime.Now,
+                        Title = training.Title, 
+                        TimeStamp = training.TimeStamp,
                         IsCompleted = training.IsCompleted,
                         Duration = training.Duration,
                         IsPublic = training.IsPublic,

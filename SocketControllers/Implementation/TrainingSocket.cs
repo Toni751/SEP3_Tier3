@@ -51,6 +51,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         {
             Request request = actualRequest.Request;
             TrainingSocketsModelWithOwner training = JsonSerializer.Deserialize<TrainingSocketsModelWithOwner>(request.Argument.ToString());
+            Console.WriteLine("XXXXXXXXXXXXXXXXXXX" + training.TimeStamp);
             int trainingId = await trainingRepo.AddTrainingAsync(training);
             Request responseRequest = new Request
             {

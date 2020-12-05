@@ -24,7 +24,7 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("isCompleted")]
         public bool IsCompleted { get; set; }
         
-        [JsonPropertyName("isPublic")]
+        [JsonPropertyName("global")]
         public bool IsPublic{ get; set; }
         
         [JsonPropertyName("exercises")]
