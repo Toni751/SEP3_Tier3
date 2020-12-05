@@ -8,5 +8,6 @@ namespace SEP3_Tier3.Models
         [Required]
         public string Title { get; set; }
         public string Description { get; set; }
+        public User Owner { get; set; }
     }
 }

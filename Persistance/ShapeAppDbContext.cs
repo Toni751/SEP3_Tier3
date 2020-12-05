@@ -16,6 +16,8 @@ namespace SEP3_T3.Persistance
       public DbSet<UserAction> UserActions { get; set; }
       public DbSet<PageRating> PageRatings { get; set; }
       public DbSet<Notification> Notifications { get; set; }
+      public DbSet<Training> Training { get; set; }
+      public DbSet<Exercise> Exercise { get; set; }
       public DbSet<TrainingExercise> TrainingExercises { get; set; }
       public DbSet<DietMeal> DietMeals { get; set; }
 

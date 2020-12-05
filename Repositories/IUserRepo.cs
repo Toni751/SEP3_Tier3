@@ -9,7 +9,6 @@ namespace SEP3_Tier3.Repositories
     {
         Task<int> AddUserAsync(UserSocketsModel user);
         Task<UserShortVersion> LoginAsync(string email, string password);
-        Task<List<Post>> GetLatestPostsForUserAsync(int id, int offset);
         Task<UserSocketsModel> GetUserByIdAsync(int senderId, int receiverId);
         Task<bool> EditUserAsync(UserSocketsModel user);
         Task<bool> DeleteUserAsync(int userId);

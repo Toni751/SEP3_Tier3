@@ -31,9 +31,9 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 case "POST_GET_BY_ID":
                     return await GetPostByIdAsync(actualRequest);
                 case "POST_GET_FOR_USER":
-                    return GetPostsForUserAsync(actualRequest);
+                    return GetPostsForUser(actualRequest);
                 case "POST_GET_BY_USER":
-                    return GetPostsByUserAsync(actualRequest);
+                    return GetPostsByUser(actualRequest);
                 case "POST_EDIT":
                     return await UpdatePostAsync(actualRequest);
                 case "POST_DELETE":
@@ -120,7 +120,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
-        private ActualRequest GetPostsForUserAsync(ActualRequest actualRequest)
+        private ActualRequest GetPostsForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
             List<int> ints = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
@@ -155,7 +155,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
-        private ActualRequest GetPostsByUserAsync(ActualRequest actualRequest)
+        private ActualRequest GetPostsByUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
             List<int> ints = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());

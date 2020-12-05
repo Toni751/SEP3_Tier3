@@ -9,6 +9,7 @@ namespace SEP3_Tier3.Core
         private IAdminRepo adminRepo;
         private IUserRepo userRepo;
         private IPostRepo postRepo;
+        private ITrainingRepo trainingRepo;
 
         public IAdminRepo AdminRepo {
             get {
@@ -34,18 +35,12 @@ namespace SEP3_Tier3.Core
             }   
         }
 
-        // public IAdminRepo AdminRepository()
-        // {
-        //     if(adminRepo == null)
-        //         adminRepo = new AdminRepo();
-        //     return adminRepo;
-        // }
-        //
-        // public IUserRepo UserRepository()
-        // {
-        //     if(userRepo == null)
-        //         userRepo = new UserRepo();
-        //     return userRepo;
-        // }
+        public ITrainingRepo TrainingRepo {
+            get {
+                if(trainingRepo == null)
+                    trainingRepo = new TrainingRepo();
+                return trainingRepo;
+            }
+        }
     }
 }

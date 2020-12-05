@@ -10,6 +10,7 @@ namespace SEP3_Tier3.Core
         private IAdminSocket adminSocket;
         private IUserSocket userSocket;
         private IPostSocket postSocket;
+        private ITrainingSocket trainingSocket;
 
         public SocketControllerFactory(RepositoriesFactory repositoriesFactory)
         {
@@ -40,18 +41,14 @@ namespace SEP3_Tier3.Core
             }
         }
 
-        // public IAdminSocket AdminSocketController()
-        // {
-        //     if (adminSocket == null)
-        //         adminSocket = new AdminSocket(repositoriesFactory.AdminRepository());
-        //     return adminSocket;
-        // }
-        //
-        // public IUserSocket UserSocketController()
-        // {
-        //     if(userSocket == null)
-        //         userSocket = new UserSocket(repositoriesFactory.UserRepository());
-        //     return userSocket;
-        // }
+        public ITrainingSocket TrainingSocket
+        {
+            get
+            {
+                if(trainingSocket == null)
+                    trainingSocket = new TrainingSocket(repositoriesFactory.TrainingRepo);
+                return trainingSocket;
+            }
+        }
     }
 }

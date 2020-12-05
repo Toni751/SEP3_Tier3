@@ -29,17 +29,6 @@ namespace SEP3_Tier3.Models
         //ALSO DON'T FORGET ABOUT LIMIT
         [JsonIgnore]
         public List<Post> Posts { get; set; }
-        
-        [JsonIgnore]
-        public List<Exercise> Exercises { get; set; }
-        
-        [JsonIgnore]
-        public List<Training> Trainings { get; set; }
-        
-        [JsonIgnore]
-        public List<Meal> Meals { get; set; }
-        [JsonIgnore]
-        public List<Diet> Diets { get; set; }
 
         // [JsonPropertyName("avatar")]
         // public byte[] Avatar { get; set; }

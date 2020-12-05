@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEP3_T3.Persistance;
 
 namespace SEP3_Tier3.Migrations
 {
     [DbContext(typeof(ShapeAppDbContext))]
-    partial class ShapeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201204231703_UpdatedUserReferenceToFitnessModels")]
+    partial class UpdatedUserReferenceToFitnessModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,11 +132,16 @@ namespace SEP3_Tier3.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Exercise");
                 });
@@ -449,6 +456,13 @@ namespace SEP3_Tier3.Migrations
                         .HasForeignKey("MealId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SEP3_Tier3.Models.Exercise", b =>
+                {
+                    b.HasOne("SEP3_Tier3.Models.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.Friendship", b =>

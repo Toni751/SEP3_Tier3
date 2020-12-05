@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEP3_T3.Persistance;
 
 namespace SEP3_Tier3.Migrations
 {
     [DbContext(typeof(ShapeAppDbContext))]
-    partial class ShapeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201203132453_AddedDurationToTraining")]
+    partial class AddedDurationToTraining
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,16 +94,16 @@ namespace SEP3_Tier3.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Diet");
                 });
@@ -134,7 +136,12 @@ namespace SEP3_Tier3.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Exercise");
                 });
@@ -166,16 +173,16 @@ namespace SEP3_Tier3.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Meal");
                 });
@@ -312,9 +319,6 @@ namespace SEP3_Tier3.Migrations
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("OwnerId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime");
 
@@ -326,9 +330,12 @@ namespace SEP3_Tier3.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Training");
                 });
@@ -431,9 +438,9 @@ namespace SEP3_Tier3.Migrations
 
             modelBuilder.Entity("SEP3_Tier3.Models.Diet", b =>
                 {
-                    b.HasOne("SEP3_Tier3.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
+                    b.HasOne("SEP3_Tier3.Models.User", null)
+                        .WithMany("Diets")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.DietMeal", b =>
@@ -449,6 +456,13 @@ namespace SEP3_Tier3.Migrations
                         .HasForeignKey("MealId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SEP3_Tier3.Models.Exercise", b =>
+                {
+                    b.HasOne("SEP3_Tier3.Models.User", null)
+                        .WithMany("Exercises")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.Friendship", b =>
@@ -468,9 +482,9 @@ namespace SEP3_Tier3.Migrations
 
             modelBuilder.Entity("SEP3_Tier3.Models.Meal", b =>
                 {
-                    b.HasOne("SEP3_Tier3.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
+                    b.HasOne("SEP3_Tier3.Models.User", null)
+                        .WithMany("Meals")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.Message", b =>
@@ -542,9 +556,9 @@ namespace SEP3_Tier3.Migrations
 
             modelBuilder.Entity("SEP3_Tier3.Models.Training", b =>
                 {
-                    b.HasOne("SEP3_Tier3.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
+                    b.HasOne("SEP3_Tier3.Models.User", null)
+                        .WithMany("Trainings")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.TrainingExercise", b =>

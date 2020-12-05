@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using Microsoft.EntityFrameworkCore.Internal;
 using SEP3_Tier3.Core;
 using SEP3_Tier3.Models;
 using SEP3_Tier3.Repositories;
@@ -116,6 +117,8 @@ namespace SEP3_Tier3
                 requestResponse = await socketFactory.AdminSocket.HandleClientRequest(actualRequest);
             else if (actualRequest.Request.ActionType.StartsWith("POST"))
                 requestResponse = await socketFactory.PostSocket.HandleClientRequest(actualRequest);
+            else if (actualRequest.Request.ActionType.StartsWith("TRAINING"))
+                requestResponse = await socketFactory.TrainingSocket.HandleClientRequest(actualRequest);
             else
                 requestResponse = null;
 

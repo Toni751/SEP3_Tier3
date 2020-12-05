@@ -145,6 +145,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 List<int> userIds = GetFriendsIdsForUserWithUserId(userId);
+                userIds.AddRange(GetFollowingGymsIdsForUserId(userId));
                 List<Post> postsDb = new List<Post>();
 
                 foreach (var id in userIds)
@@ -307,10 +308,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                     .Include(p => p.Comments)
                     .ThenInclude(c => c.Owner)
                     .Include(p => p.Owner).FirstAsync();
-                if (post.Comments != null && post.Comments.Any())
+
+                List<Comment> orderedComments = post.Comments.OrderByDescending(c => c.TimeStamp).ToList();
+                if (orderedComments.Any())
                 {
                     List<CommentSockets> comments = new List<CommentSockets>();
-                    foreach (var postComment in post.Comments)
+                    foreach (var postComment in orderedComments)
                     {
                         UserShortVersion owner = new UserShortVersion {
                             UserId = postComment.Owner.Id,
@@ -439,6 +442,15 @@ namespace SEP3_Tier3.Repositories.Implementation
                     .Select(fr => fr.FirstUserId).ToList();
                 userIds.AddRange(friendsSecond);
                 return userIds;
+            }
+        }
+
+        private List<int> GetFollowingGymsIdsForUserId(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                return ctx.UserActions.Where(ua => ua.SenderId == userId && ua.IsFollowPage)
+                    .Select(ua => ua.ReceiverId).ToList();
             }
         }
     }

@@ -77,16 +77,6 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public async Task<List<Post>> GetLatestPostsForUserAsync(int id, int offset)
-        {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-               //return await ctx.Posts.Where(p => p.Owner.Id == id).Take(5).ToListAsync();
-            }
-
-            return null;
-        }
-
         public async Task<UserSocketsModel> GetUserByIdAsync(int senderId, int receiverId)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -120,12 +110,23 @@ namespace SEP3_Tier3.Repositories.Implementation
                     bools[6] = userAction.IsFriendRequest;
                 }
 
+                if (IsUserPage(senderId))
+                    bools[5] = userAction?.IsFollowPage ?? false;
+                
                 User user = await ctx.Users.Where(u => u.Id == receiverId)
                     .Include(u => u.Address).FirstAsync();
 
-                int relevantFriendsNumber = areFriends
-                    ? GetTotalNumberOfFriendsForUser(receiverId)
-                    : GetNumberOfCommonFriends(senderId, receiverId);
+                int relevantFriendsNumber;
+                if (!IsUserPage(senderId) && !IsUserPage(receiverId))
+                    relevantFriendsNumber = areFriends
+                        ? GetTotalNumberOfFriendsForUser(receiverId)
+                        : GetNumberOfCommonFriends(senderId, receiverId);
+                else if (IsUserPage(senderId) && !IsUserPage(receiverId))
+                    relevantFriendsNumber = UserFollowsGym(receiverId, senderId)
+                        ? GetTotalNumberOfFriendsForUser(receiverId) : 0;
+                else 
+                    relevantFriendsNumber = GetTotalNumberOfFollowersForGym(receiverId);
+
                 return new UserSocketsModel
                 {
                     Id = user.Id,
@@ -159,6 +160,14 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
         
+        private int GetTotalNumberOfFollowersForGym(int gymId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                return ctx.UserActions.Count(ua => ua.ReceiverId == gymId && ua.IsFollowPage);
+            }
+        }
+        
         private int GetNumberOfCommonFriends(int firstUserId,int secondUserId)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -189,6 +198,25 @@ namespace SEP3_Tier3.Repositories.Implementation
 
                 return numberOfCommonFriends;
             }
+        }
+
+        private bool IsUserPage(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                User user = ctx.Users.Where(u => u.Id == userId)
+                    .Include(u => u.Address).First();
+                Console.WriteLine("User " + userId + " is page " + (user.Address != null));
+                return user.Address != null;
+            }
+        }
+
+        private bool UserFollowsGym(int userId, int gymId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                return ctx.UserActions.Any(ua => ua.SenderId == userId && ua.ReceiverId == gymId && ua.IsFollowPage);
+            } 
         }
 
         public async Task<bool> EditUserAsync(UserSocketsModel user)
@@ -513,11 +541,34 @@ namespace SEP3_Tier3.Repositories.Implementation
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 List<User> friendsDb;
-                if (UsersAreFriends(userId, senderId) || userId == senderId)
-                    friendsDb = GetFriendListForUser(userId);
+                if (!IsUserPage(userId) && !IsUserPage(senderId)) // user goes to user profile
+                {
+                    if (UsersAreFriends(userId, senderId) || userId == senderId)
+                        friendsDb = GetFriendListForUser(userId);
+                    else
+                        friendsDb = GetCommonFriendsForUsers(userId, senderId);
+                }
+                else if (IsUserPage(userId) && !IsUserPage(senderId)) // user goes to gym profile
+                {
+                    if (UserFollowsGym(senderId, userId))
+                        friendsDb = GetCommonFollowersFriends(senderId, userId);
+                    else
+                        friendsDb = null;
+                }
+                else if (!IsUserPage(userId) && IsUserPage(senderId)) // gym goes to user profile
+                {
+                    if (UserFollowsGym(userId, senderId))
+                        friendsDb = GetFriendListForUser(userId);
+                    else
+                        friendsDb = null;
+                }
                 else
-                    friendsDb = GetCommonFriendsForUsers(userId, senderId);
+                    friendsDb = GetCommonFollowersForGyms(userId, senderId);
 
+
+                if (friendsDb == null)
+                    return null;
+                
                 if (offset >= friendsDb.Count)
                     return null;
 
@@ -551,7 +602,6 @@ namespace SEP3_Tier3.Repositories.Implementation
                     .Select(fr => fr.FirstUser).ToList();
                 firstUserFriends.AddRange(temp);
                 
-                
                 List<User> secondUserFriends = new List<User>();
                 temp = ctx.Friendships.Where(fr => fr.FirstUserId == secondUserId)
                     .Select(fr => fr.SecondUser).ToList();
@@ -582,6 +632,54 @@ namespace SEP3_Tier3.Repositories.Implementation
                 friendsDb.AddRange(temp);
                 return friendsDb;
             }
+        }
+        
+        private List<User> GetCommonFollowersFriends(int userId, int gymId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<User> userFriends = new List<User>();
+                userFriends.Add(ctx.Users.First(u => u.Id == userId));
+                List<User> temp = ctx.Friendships.Where(fr => fr.FirstUserId == userId)
+                    .Select(fr => fr.SecondUser).ToList();
+                userFriends.AddRange(temp);
+                temp = ctx.Friendships.Where(fr => fr.SecondUserId == userId)
+                    .Select(fr => fr.FirstUser).ToList();
+                userFriends.AddRange(temp);
+                
+                List<User> gymFollowers = ctx.UserActions.Where(ua => ua.ReceiverId == gymId && ua.IsFollowPage)
+                    .Select(ua => ua.Sender).ToList();
+                
+                List<User> commonFollowersFriends = new List<User>();
+                foreach (var gymFollower in gymFollowers)
+                {
+                    if(userFriends.Contains(gymFollower))
+                        commonFollowersFriends.Add(gymFollower);
+                }
+
+                return commonFollowersFriends;
+            } 
+        }
+
+        private List<User> GetCommonFollowersForGyms(int firstGymId, int secondGymId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                List<User> firstGymFollowers = ctx.UserActions.Where(ua => ua.ReceiverId == firstGymId && ua.IsFollowPage)
+                    .Select(ua => ua.Sender).ToList();
+                
+                List<User> secondGymFollowers = ctx.UserActions.Where(ua => ua.ReceiverId == secondGymId && ua.IsFollowPage)
+                    .Select(ua => ua.Sender).ToList();
+                
+                List<User> commonFollowers = new List<User>();
+                foreach (var gymFollower in firstGymFollowers)
+                {
+                    if(secondGymFollowers.Contains(gymFollower))
+                        commonFollowers.Add(gymFollower);
+                }
+
+                return commonFollowers;
+            } 
         }
     }
 }
