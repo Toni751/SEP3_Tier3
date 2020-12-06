@@ -12,6 +12,7 @@ namespace SEP3_Tier3.Repositories
         List<TrainingShortVersion> GetPrivateTrainingsForUser(int userId, int offset);
         List<TrainingSVWithOwner> GetTrainingsForUser(int id, int offset);
         List<TrainingSVWithTime> GetTrainingsInWeekForUser(int userId, int weekNumber);
+        List<TrainingSVWithTime> GetTrainingsTodayForUser(int userId);
         Task<bool> EditTrainingAsync(TrainingSocketsModel training);
         Task<bool> DeleteTrainingAsync(int trainingId);
         Task<int> AddExerciseToTrainingAsync(ExerciseWithTraining exercise);

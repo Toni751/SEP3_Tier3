@@ -63,7 +63,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         private ActualRequest GetFriendsForUser(ActualRequest actualRequest)
         {
             List<int> integers = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
-            List<UserShortVersion> friends = userRepo.GetFriendsForUser(integers[0], integers[1], integers[2]);
+            List<UserShortVersionWithStatus> friends = userRepo.GetFriendsForUser(integers[0], integers[1], integers[2]);
             Request response = new Request
             {
                 ActionType = ActionType.USER_GET_FRIENDS.ToString(),

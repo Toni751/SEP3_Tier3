@@ -23,15 +23,40 @@ namespace SEP3_Tier3.Repositories.Implementation
                     {
                         Title = training.Title, 
                         TimeStamp = training.TimeStamp,
-                        IsCompleted = training.IsCompleted,
+                        IsCompleted = training.Completed,
                         Duration = training.Duration,
-                        IsPublic = training.IsPublic,
+                        IsPublic = training.Global,
                         Type = training.Type,
                         Owner = owner
                     };
                     await ctx.Training.AddAsync(trainingDb);
                     await ctx.SaveChangesAsync();
-                    return ctx.Training.ToList().Last().Id;
+                    int createdTrainingId = ctx.Training.ToList().Last().Id;
+                    
+                    if (training.Exercises != null && training.Exercises.Any()) {
+                        foreach (var exercise in training.Exercises) {
+                            int createdExerciseId;
+                            if (exercise.Id > 0)
+                            {
+                                createdExerciseId = exercise.Id;
+                            }
+                            else
+                            {
+                                await ctx.Exercise.AddAsync(exercise);
+                                await ctx.SaveChangesAsync();
+                                createdExerciseId = ctx.Exercise.ToList().Last().Id;
+                            }
+                            
+                            await ctx.TrainingExercises.AddAsync(new TrainingExercise
+                            {
+                                ExerciseId = createdExerciseId,
+                                TrainingId = createdTrainingId
+                            });
+                            await ctx.SaveChangesAsync();
+                        }
+                    }
+
+                    return createdTrainingId;
                 }
                 catch (Exception e)
                 {
@@ -44,7 +69,7 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                Training training = new Training();
+                Training training;
                 try {
                     training = await ctx.Training.Where(t => t.Id == id)
                         .Include(t => t.Owner).FirstAsync();
@@ -64,8 +89,8 @@ namespace SEP3_Tier3.Repositories.Implementation
                     Duration = training.Duration,
                     Exercises = exercises,
                     Id = training.Id,
-                    IsCompleted = training.IsCompleted,
-                    IsPublic = training.IsPublic,
+                    Completed = training.IsCompleted,
+                    Global = training.IsPublic,
                     Owner = owner,
                     TimeStamp = training.TimeStamp,
                     Title = training.Title,
@@ -117,17 +142,26 @@ namespace SEP3_Tier3.Repositories.Implementation
                 if (offset >= trainings.Count)
                     return null;
                 
+                List<string> trainingTitles = new List<string>();
+                for (int i = 0; i < offset; i++)
+                {
+                    trainingTitles.Add(trainings[i].Title);
+                }
                 List<TrainingShortVersion> publicTrainings = new List<TrainingShortVersion>();
                 for (int i = offset; i < offset + 10; i++)
                 {
                     if(i >= trainings.Count)
                         break;
                     
+                    if(trainingTitles.Contains(trainings[i].Title))
+                        continue;
+                    
                     publicTrainings.Add(new TrainingSVWithOwner
                     {
                         TrainingId = trainings[i].Id,
                         TrainingTitle = trainings[i].Title
                     });
+                    trainingTitles.Add(trainings[i].Title);
                 }
 
                 return publicTrainings;
@@ -192,6 +226,30 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
+        public List<TrainingSVWithTime> GetTrainingsTodayForUser(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                DateTime today = DateTime.Today;
+                List<Training> trainings = ctx.Training.Where(t => 
+                    t.Owner.Id == userId && t.TimeStamp.Date.CompareTo(today) == 0).OrderBy(t => t.TimeStamp).ToList();
+                
+                List<TrainingSVWithTime> trainingsInWeek = new List<TrainingSVWithTime>();
+                foreach (var training in trainings)
+                {
+                    trainingsInWeek.Add(new TrainingSVWithTime
+                    {
+                        Duration = training.Duration,
+                        TimeStamp = training.TimeStamp,
+                        TrainingId = training.Id,
+                        TrainingTitle = training.Title
+                    });
+                }
+
+                return trainingsInWeek;
+            }
+        }
+
         public async Task<bool> EditTrainingAsync(TrainingSocketsModel training)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -206,8 +264,8 @@ namespace SEP3_Tier3.Repositories.Implementation
                 if(training.TimeStamp.Year != 1)
                     trainingDb.TimeStamp = training.TimeStamp;
                 
-                trainingDb.IsCompleted = training.IsCompleted;
-                trainingDb.IsPublic = training.IsPublic;
+                trainingDb.IsCompleted = training.Completed;
+                trainingDb.IsPublic = training.Global;
                 
                 try
                 {

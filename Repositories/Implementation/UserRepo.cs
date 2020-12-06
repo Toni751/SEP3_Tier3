@@ -536,7 +536,7 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        public List<UserShortVersion> GetFriendsForUser(int userId, int senderId, int offset)
+        public List<UserShortVersionWithStatus> GetFriendsForUser(int userId, int senderId, int offset)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
@@ -573,20 +573,40 @@ namespace SEP3_Tier3.Repositories.Implementation
                     return null;
 
                 List<User> friendsDbSorted = friendsDb.OrderBy(u => u.Name).ToList();
-                List<UserShortVersion> friends = new List<UserShortVersion>();
+                List<UserShortVersionWithStatus> friends = new List<UserShortVersionWithStatus>();
                 for (int i = offset; i < offset + 10; i++)
                 {
                     if(i >= friendsDbSorted.Count)
                         break;
                     
-                    friends.Add(new UserShortVersion
+                    bool[] status = new bool[2];
+                    if(userId == senderId)
+                        status = GetStatusForUser(senderId, friendsDbSorted[i].Id);
+                    friends.Add(new UserShortVersionWithStatus
                     {
                         UserId = friendsDbSorted[i].Id,
-                        UserFullName = friendsDbSorted[i].Name
+                        UserFullName = friendsDbSorted[i].Name,
+                        Status = status
                     });
                 }
 
                 return friends;
+            }
+        }
+
+        private bool[] GetStatusForUser(int senderId, int targetUserId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                bool[] status = new bool[2];
+                try
+                {
+                    UserAction userAction = ctx.UserActions.First(ua => ua.SenderId == senderId && ua.ReceiverId == targetUserId);
+                    status[0] = userAction.IsShareTrainings;
+                    status[1] = userAction.IsShareDiets;
+                }
+                catch (Exception e) {}
+                return status;
             }
         }
 

@@ -10,6 +10,7 @@ namespace SEP3_Tier3.Core
         private IUserRepo userRepo;
         private IPostRepo postRepo;
         private ITrainingRepo trainingRepo;
+        private IDietRepo dietRepo;
 
         public IAdminRepo AdminRepo {
             get {
@@ -40,6 +41,14 @@ namespace SEP3_Tier3.Core
                 if(trainingRepo == null)
                     trainingRepo = new TrainingRepo();
                 return trainingRepo;
+            }
+        }
+
+        public IDietRepo DietRepo {
+            get {
+                if(dietRepo == null)
+                    dietRepo = new DietRepo();
+                return dietRepo;
             }
         }
     }

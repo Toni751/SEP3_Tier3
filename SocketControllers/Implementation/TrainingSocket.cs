@@ -23,7 +23,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 case "TRAINING_CREATE":
                     return await AddTrainingAsync(actualRequest);
                 case "TRAINING_GET_BY_ID":
-                    return await GetTrainingById(actualRequest);
+                    return await GetTrainingByIdAsync(actualRequest);
                 case "TRAINING_GET_PUBLIC":
                     return GetPublicTrainings(actualRequest);
                 case "TRAINING_GET_PRIVATE":
@@ -32,6 +32,8 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return GetTrainingsForUser(actualRequest);
                 case "TRAINING_GET_WEEK":
                     return GetTrainingsInWeekForUser(actualRequest);
+                case "TRAINING_GET_TODAY":
+                    return GetTrainingsTodayForUser(actualRequest);
                 case "TRAINING_EDIT":
                     return await EditTrainingAsync(actualRequest);
                 case "TRAINING_DELETE":
@@ -65,7 +67,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
-        private async Task<ActualRequest> GetTrainingById(ActualRequest actualRequest)
+        private async Task<ActualRequest> GetTrainingByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
             int trainingId = Convert.ToInt32(request.Argument.ToString());
@@ -149,6 +151,23 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 Images = null
             };
         }
+        
+        private ActualRequest GetTrainingsTodayForUser(ActualRequest actualRequest)
+        {
+            Request request = actualRequest.Request;
+            int userId = Convert.ToInt32(request.Argument.ToString());
+            List<TrainingSVWithTime> publicTrainings = trainingRepo.GetTrainingsTodayForUser(userId);
+            Request responseRequest = new Request
+            {
+                ActionType = ActionType.TRAINING_GET_TODAY.ToString(),
+                Argument = JsonSerializer.Serialize(publicTrainings)
+            };
+            return new ActualRequest
+            {
+                Request = responseRequest,
+                Images = null
+            };
+        }
 
         private async Task<ActualRequest> EditTrainingAsync(ActualRequest actualRequest)
         {
@@ -223,7 +242,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
         private async Task<ActualRequest> DeleteExerciseFromTrainingAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
-            List<int> ints = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
+            List<int> ints = JsonSerializer.Deserialize<List<int>>(request.Argument.ToString());
             Console.WriteLine("Deleting exercise with id " + ints[0] + " from training " + ints[1]);
             bool response = await trainingRepo.DeleteExerciseFromTrainingAsync(ints[0], ints[1]);
             Request responseRequest = new Request

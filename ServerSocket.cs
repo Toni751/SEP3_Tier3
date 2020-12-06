@@ -119,6 +119,8 @@ namespace SEP3_Tier3
                 requestResponse = await socketFactory.PostSocket.HandleClientRequest(actualRequest);
             else if (actualRequest.Request.ActionType.StartsWith("TRAINING"))
                 requestResponse = await socketFactory.TrainingSocket.HandleClientRequest(actualRequest);
+            else if (actualRequest.Request.ActionType.StartsWith("DIET"))
+                requestResponse = await socketFactory.DietSocket.HandleClientRequest(actualRequest);
             else
                 requestResponse = null;
 

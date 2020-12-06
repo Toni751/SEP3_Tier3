@@ -21,11 +21,11 @@ namespace SEP3_Tier3.Models
         [JsonPropertyName("duration")]
         public int Duration { get; set; }
         
-        [JsonPropertyName("isCompleted")]
-        public bool IsCompleted { get; set; }
+        [JsonPropertyName("completed")]
+        public bool Completed { get; set; }
         
         [JsonPropertyName("global")]
-        public bool IsPublic{ get; set; }
+        public bool Global{ get; set; }
         
         [JsonPropertyName("exercises")]
         public List<Exercise> Exercises { get; set; }

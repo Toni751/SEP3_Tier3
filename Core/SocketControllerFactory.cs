@@ -11,6 +11,7 @@ namespace SEP3_Tier3.Core
         private IUserSocket userSocket;
         private IPostSocket postSocket;
         private ITrainingSocket trainingSocket;
+        private IDietSocket dietSocket;
 
         public SocketControllerFactory(RepositoriesFactory repositoriesFactory)
         {
@@ -41,13 +42,19 @@ namespace SEP3_Tier3.Core
             }
         }
 
-        public ITrainingSocket TrainingSocket
-        {
-            get
-            {
+        public ITrainingSocket TrainingSocket {
+            get {
                 if(trainingSocket == null)
                     trainingSocket = new TrainingSocket(repositoriesFactory.TrainingRepo);
                 return trainingSocket;
+            }
+        }
+
+        public IDietSocket DietSocket {
+            get {
+                if(dietSocket == null)
+                    dietSocket = new DietSocket(repositoriesFactory.DietRepo);
+                return dietSocket;
             }
         }
     }

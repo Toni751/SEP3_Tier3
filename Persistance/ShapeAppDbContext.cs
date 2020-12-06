@@ -19,6 +19,8 @@ namespace SEP3_T3.Persistance
       public DbSet<Training> Training { get; set; }
       public DbSet<Exercise> Exercise { get; set; }
       public DbSet<TrainingExercise> TrainingExercises { get; set; }
+      public DbSet<Diet> Diet { get; set; }
+      public DbSet<Meal> Meal { get; set; }
       public DbSet<DietMeal> DietMeals { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
