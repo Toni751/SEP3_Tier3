@@ -23,7 +23,6 @@ namespace SEP3_Tier3.Repositories.Implementation
                     {
                         Title = training.Title, 
                         TimeStamp = training.TimeStamp,
-                        IsCompleted = training.Completed,
                         Duration = training.Duration,
                         IsPublic = training.Global,
                         Type = training.Type,

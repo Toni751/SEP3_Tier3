@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEP3_T3.Persistance;
 
 namespace SEP3_Tier3.Migrations
 {
     [DbContext(typeof(ShapeAppDbContext))]
-    partial class ShapeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201206204708_OnlineUsersAndImageToMessage")]
+    partial class OnlineUsersAndImageToMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,6 +230,22 @@ namespace SEP3_Tier3.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("SEP3_Tier3.Models.OnlineUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OnlineUsers");
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.PageRating", b =>
@@ -495,6 +513,13 @@ namespace SEP3_Tier3.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SEP3_Tier3.Models.OnlineUser", b =>
+                {
+                    b.HasOne("SEP3_Tier3.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SEP3_Tier3.Models.PageRating", b =>

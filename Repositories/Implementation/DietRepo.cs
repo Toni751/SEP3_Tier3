@@ -235,7 +235,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                         Calories = meal.Calories
                     });
                     await ctx.SaveChangesAsync();
-                    mealId = ctx.Exercise.ToList().Last().Id;
+                    mealId = ctx.Meal.ToList().Last().Id;
                 }
 
                 await ctx.DietMeals.AddAsync(new DietMeal

@@ -10,5 +10,6 @@
         public User Receiver { get; set; }
         
         public string Content { get; set; }
+        public bool HasImage { get; set; }
     }
 }

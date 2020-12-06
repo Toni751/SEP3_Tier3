@@ -121,41 +121,6 @@ namespace SEP3_T3.Persistance
                 .HasOne(n => n.Sender).WithMany();
             modelBuilder.Entity<Notification>()
                 .HasOne(n => n.Receiver).WithMany();
-
-            // modelBuilder.Entity<Administrator>(entity =>
-            // {
-            //     entity.HasKey(e => e.Id);
-            //     entity.Property(e => e.Email).IsRequired();
-            //     entity.Property(e => e.Password).IsRequired();
-            // });
-            //
-            // modelBuilder.Entity<Address>(entity =>
-            // {
-            //     entity.HasKey(e => e.Id);
-            //     entity.Property(e => e.Street).IsRequired();
-            //     entity.Property(e => e.Number).IsRequired();
-            //
-            // });
-            //
-            // modelBuilder.Entity<RegularUser>(entity =>
-            // {
-            //     entity.HasKey(e => e.Id);
-            //     entity.Property(e => e.Email).IsRequired();
-            //     entity.Property(e => e.Password).IsRequired();
-            //     entity.Property(e => e.Name).IsRequired();
-            //     entity.Property(e => e.Description).IsRequired();
-            //     entity.Property(e => e.City).IsRequired();
-            //     entity.Property<string>("AvatarPath").IsRequired();
-            // });
-            //
-            // modelBuilder.Entity<Post>(entity =>
-            // {
-            //     entity.HasKey(e => e.Id);
-            //     entity.Property(e => e.Content);
-            //     // entity.Property(e => e.Likes);
-            //     // entity.HasOne(u => u.Owner)
-            //     //     .WithMany(p => p.Posts);
-            // });
         }  
     }
 }
