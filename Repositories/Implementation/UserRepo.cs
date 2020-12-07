@@ -678,6 +678,19 @@ namespace SEP3_Tier3.Repositories.Implementation
             return onlineUserFriendIds;
         }
 
+        public UserShortVersion GetUserShortVersionById(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                string username = ctx.Users.First(u => u.Id == userId).Name;
+                return new UserShortVersion
+                {
+                    UserId = userId,
+                    UserFullName = username
+                };
+            }
+        }
+
         private bool[] GetStatusForUser(int senderId, int targetUserId)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())

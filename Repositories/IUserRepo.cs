@@ -24,5 +24,6 @@ namespace SEP3_Tier3.Repositories
         Task<bool> IncrementUserScoreAsync(int userId, int amount);
         List<UserShortVersion> GetOnlineFriendsForUser(int userId);
         List<int> LogoutOrInUser(int userId, bool isLogout);
+        UserShortVersion GetUserShortVersionById(int userId);
     }
 }

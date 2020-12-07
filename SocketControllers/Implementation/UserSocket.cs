@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Permissions;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Ocsp;
 using SEP3_Tier3.Models;
 using SEP3_Tier3.Repositories;
 using SkiaSharp;
@@ -61,9 +62,39 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return GetOnlineFriendsForUser(actualRequest);
                 case "USER_LOGOUTORIN":
                     return LogoutUser(actualRequest);
+                case "USER_GET_SV_BY_ID":
+                    return GetUserShortVersionById(actualRequest);
                 default:
                     return null;
             }
+        }
+
+        private ActualRequest GetUserShortVersionById(ActualRequest actualRequest)
+        {
+            Request request = actualRequest.Request;
+            int userId = Convert.ToInt32(request.Argument.ToString());
+            UserShortVersion user = userRepo.GetUserShortVersionById(userId);
+            Request response = new Request
+            {
+                ActionType = ActionType.USER_GET_SV_BY_ID.ToString(),
+                Argument = JsonSerializer.Serialize(user)
+            };
+            List<byte[]> userAvatars = new List<byte[]>();
+            if (user != null)
+            {
+                try {
+                    var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{user.UserId}/avatar.jpg");
+                    userAvatars.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
+                }
+                catch (Exception e) {
+                    Console.WriteLine("No avatar found for user " + user.UserId);
+                }
+            }
+            return new ActualRequest
+            {
+                Request = response,
+                Images = userAvatars
+            };
         }
 
         private ActualRequest LogoutUser(ActualRequest actualRequest)

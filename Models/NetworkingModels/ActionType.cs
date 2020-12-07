@@ -8,6 +8,7 @@ namespace SEP3_Tier3.Models
         USER_LOGIN,
         USER_REGISTER,
         USER_GET_BY_ID,
+        USER_GET_SV_BY_ID,
         USER_EDIT,
         USER_DELETE,
         USER_FRIEND_REQUEST_SEND,
