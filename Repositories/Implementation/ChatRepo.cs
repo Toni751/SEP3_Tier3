@@ -16,6 +16,8 @@ namespace SEP3_Tier3.Repositories.Implementation
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 List<int> ints = new List<int>();
+                if (message.HasImage && message.Content == null)
+                    message.Content = "";
                 await ctx.Messages.AddAsync(new Message
                 {
                     Content = message.Content,
@@ -101,9 +103,9 @@ namespace SEP3_Tier3.Repositories.Implementation
                     }
                 }
 
-                Console.WriteLine("Messaged user ids count is " + messagedUserIds.Count);
-                Console.WriteLine("User last messaged user ids: " + messagedUserIds[0] + " " + messagedUserIds[1]);
-                Console.WriteLine("Last messages length is " + lastMessageIds.Count);
+                // Console.WriteLine("Messaged user ids count is " + messagedUserIds.Count);
+                // Console.WriteLine("User last messaged user ids: " + messagedUserIds[0] + " " + messagedUserIds[1]);
+                // Console.WriteLine("Last messages length is " + lastMessageIds.Count);
                 if (offset >= lastMessageIds.Count)
                     return null;
 
@@ -168,6 +170,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                     });
                 }
 
+                relevantMessages.Reverse();
                 return relevantMessages;
             }
         }

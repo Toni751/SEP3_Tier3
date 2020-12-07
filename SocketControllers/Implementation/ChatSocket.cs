@@ -45,7 +45,7 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             Request requestResponse = new Request
             {
                 ActionType = ActionType.MESSAGE_CREATE.ToString(),
-                Argument = JsonSerializer.Serialize(messageId)
+                Argument = JsonSerializer.Serialize(ints)
             };
             if (messageId > 0)
             {

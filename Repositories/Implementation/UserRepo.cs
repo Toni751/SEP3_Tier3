@@ -62,7 +62,8 @@ namespace SEP3_Tier3.Repositories.Implementation
                 {
                     string accountType = user.Address != null ? "PageOwner" : "RegularUser";
                     Console.WriteLine("User " + user.Id + " added to online user ids");
-                    onlineUserIds.Add(user.Id);
+                    if(!onlineUserIds.Contains(user.Id))
+                        onlineUserIds.Add(user.Id);
                     return new UserShortVersion
                     {
                         UserId = user.Id,
