@@ -121,6 +121,8 @@ namespace SEP3_Tier3
                 requestResponse = await socketFactory.TrainingSocket.HandleClientRequest(actualRequest);
             else if (actualRequest.Request.ActionType.StartsWith("DIET"))
                 requestResponse = await socketFactory.DietSocket.HandleClientRequest(actualRequest);
+            else if (actualRequest.Request.ActionType.StartsWith("MESSAGE"))
+                requestResponse = await socketFactory.ChatSocket.HandleClientRequest(actualRequest);
             else
                 requestResponse = null;
 

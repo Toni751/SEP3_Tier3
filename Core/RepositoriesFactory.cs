@@ -11,7 +11,7 @@ namespace SEP3_Tier3.Core
         private IPostRepo postRepo;
         private ITrainingRepo trainingRepo;
         private IDietRepo dietRepo;
-
+        private IChatRepo chatRepo;
         public IAdminRepo AdminRepo {
             get {
                 if(adminRepo == null)
@@ -49,6 +49,14 @@ namespace SEP3_Tier3.Core
                 if(dietRepo == null)
                     dietRepo = new DietRepo();
                 return dietRepo;
+            }
+        }
+
+        public IChatRepo ChatRepo {
+            get {
+                if(chatRepo == null)
+                    chatRepo = new ChatRepo();
+                return chatRepo;
             }
         }
     }

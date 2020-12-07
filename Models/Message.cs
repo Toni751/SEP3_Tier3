@@ -1,4 +1,6 @@
-﻿namespace SEP3_Tier3.Models
+﻿using System;
+
+namespace SEP3_Tier3.Models
 {
     public class Message
     {
@@ -10,6 +12,7 @@
         public User Receiver { get; set; }
         
         public string Content { get; set; }
+        public DateTime TimeStamp { get; set;}
         public bool HasImage { get; set; }
     }
 }

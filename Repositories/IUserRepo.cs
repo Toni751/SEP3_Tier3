@@ -21,5 +21,8 @@ namespace SEP3_Tier3.Repositories
         List<UserShortVersion> GetAllGymsInCity(string city);
         List<NotificationSockets> GetNotificationsForUser(int userId);
         List<UserShortVersionWithStatus> GetFriendsForUser(int userId, int senderId, int offset);
+        Task<bool> IncrementUserScoreAsync(int userId, int amount);
+        List<UserShortVersion> GetOnlineFriendsForUser(int userId);
+        List<int> LogoutOrInUser(int userId, bool isLogout);
     }
 }

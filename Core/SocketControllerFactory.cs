@@ -12,6 +12,7 @@ namespace SEP3_Tier3.Core
         private IPostSocket postSocket;
         private ITrainingSocket trainingSocket;
         private IDietSocket dietSocket;
+        private IChatSocket chatSocket;
 
         public SocketControllerFactory(RepositoriesFactory repositoriesFactory)
         {
@@ -55,6 +56,14 @@ namespace SEP3_Tier3.Core
                 if(dietSocket == null)
                     dietSocket = new DietSocket(repositoriesFactory.DietRepo);
                 return dietSocket;
+            }
+        }
+
+        public IChatSocket ChatSocket {
+            get {
+                if(chatSocket == null)
+                    chatSocket = new ChatSocket(repositoriesFactory.ChatRepo);
+                return chatSocket;
             }
         }
     }

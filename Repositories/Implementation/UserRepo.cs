@@ -16,6 +16,13 @@ namespace SEP3_Tier3.Repositories.Implementation
 {
     public class UserRepo : IUserRepo
     {
+        private List<int> onlineUserIds;
+
+        public UserRepo()
+        {
+            onlineUserIds = new List<int>();
+        }
+
         public async Task<int> AddUserAsync(UserSocketsModel user)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -54,7 +61,8 @@ namespace SEP3_Tier3.Repositories.Implementation
                 if (user != null)
                 {
                     string accountType = user.Address != null ? "PageOwner" : "RegularUser";
-
+                    Console.WriteLine("User " + user.Id + " added to online user ids");
+                    onlineUserIds.Add(user.Id);
                     return new UserShortVersion
                     {
                         UserId = user.Id,
@@ -592,6 +600,82 @@ namespace SEP3_Tier3.Repositories.Implementation
 
                 return friends;
             }
+        }
+
+        public async Task<bool> IncrementUserScoreAsync(int userId, int amount)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                try
+                {
+                    User user = await ctx.Users.FirstAsync(u => u.Id == userId);
+                    user.Score += amount;
+                    ctx.Users.Update(user);
+                    await ctx.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception e) {
+                    return false;
+                }
+            }
+        }
+
+        public List<UserShortVersion> GetOnlineFriendsForUser(int userId)
+        {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
+            {
+                // List<User> userFriends = new List<User>();
+                // List<User> temp = ctx.Friendships.Where(fr => fr.FirstUserId == userId)
+                //     .Select(fr => fr.SecondUser).ToList();
+                // userFriends.AddRange(temp);
+                // temp = ctx.Friendships.Where(fr => fr.SecondUserId == userId)
+                //     .Select(fr => fr.FirstUser).ToList();
+                // userFriends.AddRange(temp);
+                //
+                // for (int i = 0; i < userFriends.Count; i++)
+                // {
+                //     if (!onlineUserIds.Contains(userFriends[i].Id))
+                //     {
+                //         userFriends.RemoveAt(i);
+                //         i--;
+                //     }
+                // }
+                List<int> onlineFriendIds = new List<int>();
+                foreach (var onlineUserId in onlineUserIds) {
+                    if(UsersAreFriends(userId, onlineUserId))
+                        onlineFriendIds.Add(onlineUserId);
+                }
+
+                if (!onlineFriendIds.Any())
+                    return null;
+                
+                List<UserShortVersion> onlineFriends = new List<UserShortVersion>();
+                foreach (var onlineFriendId in onlineFriendIds) {
+                    string username = ctx.Users.First(u => u.Id == onlineFriendId).Name;
+                    onlineFriends.Add(new UserShortVersion
+                    {
+                        UserId = onlineFriendId,
+                        UserFullName = username
+                    });
+                }
+                return onlineFriends;
+            }
+        }
+
+        public List<int> LogoutOrInUser(int userId, bool isLogout)
+        {
+            Console.WriteLine("Logging out or in user with id " + userId + " is logout " + isLogout);
+            if(isLogout)
+                onlineUserIds.Remove(userId);
+            
+            List<int> onlineUserFriendIds = new List<int>();
+            foreach (var onlineUserId in onlineUserIds)
+            {
+                if (UsersAreFriends(userId, onlineUserId))
+                    onlineUserFriendIds.Add(onlineUserId);
+            }
+
+            return onlineUserFriendIds;
         }
 
         private bool[] GetStatusForUser(int senderId, int targetUserId)

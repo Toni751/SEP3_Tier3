@@ -55,9 +55,77 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     return GetNotificationsForUser(actualRequest);
                 case "USER_GET_FRIENDS":
                     return GetFriendsForUser(actualRequest);
+                case "USER_INCREMENT_SCORE":
+                    return await IncrementUserScoreAsync(actualRequest);
+                case "USER_GET_ONLINE_FRIENDS":
+                    return GetOnlineFriendsForUser(actualRequest);
+                case "USER_LOGOUTORIN":
+                    return LogoutUser(actualRequest);
                 default:
                     return null;
             }
+        }
+
+        private ActualRequest LogoutUser(ActualRequest actualRequest)
+        {
+            Request request = actualRequest.Request;
+            List<int> userInts = JsonSerializer.Deserialize<List<int>>(request.Argument.ToString());
+            List<int> onlineFriendIds = userRepo.LogoutOrInUser(userInts[0], userInts[1] == 1);
+            Request response = new Request
+            {
+                ActionType = ActionType.USER_LOGOUTORIN.ToString(),
+                Argument = JsonSerializer.Serialize(onlineFriendIds)
+            };
+            return new ActualRequest
+            {
+                Request = response,
+                Images = null
+            };
+        }
+
+        private ActualRequest GetOnlineFriendsForUser(ActualRequest actualRequest)
+        {
+            Request request = actualRequest.Request;
+            int userId = Convert.ToInt32(request.Argument.ToString());
+            List<UserShortVersion> onlineFriends = userRepo.GetOnlineFriendsForUser(userId);
+            Request response = new Request
+            {
+                ActionType = ActionType.USER_GET_ONLINE_FRIENDS.ToString(),
+                Argument = JsonSerializer.Serialize(onlineFriends)
+            };
+            List<byte[]> userAvatars = new List<byte[]>();
+            if (onlineFriends != null && onlineFriends.Count > 0) {
+                foreach (var friend in onlineFriends) {
+                    try {
+                        var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{friend.UserId}/avatar.jpg");
+                        userAvatars.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine("No avatar found for user " + friend.UserId);
+                    }
+                }
+            }
+            return new ActualRequest
+            {
+                Request = response,
+                Images = userAvatars
+            };
+        }
+
+        private async Task<ActualRequest> IncrementUserScoreAsync(ActualRequest actualRequest)
+        {
+            List<int> integers = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
+            bool response = await userRepo.IncrementUserScoreAsync(integers[0], integers[1]);
+            Request responseRequest = new Request
+            {
+                ActionType = ActionType.USER_INCREMENT_SCORE.ToString(),
+                Argument = JsonSerializer.Serialize(response)
+            };
+            return new ActualRequest
+            {
+                Request = responseRequest,
+                Images = null
+            };
         }
 
         private ActualRequest GetFriendsForUser(ActualRequest actualRequest)
