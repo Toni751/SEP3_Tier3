@@ -683,12 +683,17 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                string username = ctx.Users.First(u => u.Id == userId).Name;
-                return new UserShortVersion
-                {
-                    UserId = userId,
-                    UserFullName = username
-                };
+                try {
+                    string username = ctx.Users.First(u => u.Id == userId).Name;
+                    return new UserShortVersion
+                    {
+                        UserId = userId,
+                        UserFullName = username
+                    };
+                }
+                catch (Exception e) {
+                    return null;
+                }
             }
         }
 
