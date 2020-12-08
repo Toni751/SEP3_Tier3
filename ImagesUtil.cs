@@ -33,11 +33,7 @@ namespace SEP3_Tier3
                     FileIOPermission f = new FileIOPermission(PermissionState.None);
                     f.AllLocalFiles = FileIOPermissionAccess.Write;
                     f.Demand();
-
-                    Console.WriteLine("*************************Before writing " + path);
-
                     ms.WriteTo(fs);
-                    Console.WriteLine("******************WROTE TO PATH " + path);
                 }
             }
         }

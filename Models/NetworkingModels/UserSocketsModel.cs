@@ -37,11 +37,14 @@ namespace SEP3_Tier3.Models
         public byte[] ProfileBackground { get; set; }
         
         // 0: isFriend, 1: isYouSentHimFriendRequest, 2: isYouReportedHim, 3: isHeSharedTrainingsWithYou,
-        // 4: isHeSharedDietsWithYou,5: isYouFollowPage, 6: isHeSentYouFriendRequest
+        // 4: isHeSharedDietsWithYou,5: isYouFollowPage, 6: isHeSentYouFriendRequest, 7:hasUserRatedPage
         [JsonPropertyName("userStatus")]
         public bool[] UserStatus { get; set; }
         
         [JsonPropertyName("relevantFriendsNumber")]
         public int RelevantFriendsNumber { get; set; }
+        
+        [JsonPropertyName("rating")]
+        public int Rating { get; set; }
     }
 }

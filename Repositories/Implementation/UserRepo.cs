@@ -90,7 +90,7 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                bool[] bools = new bool[7];
+                bool[] bools = new bool[8];
                 bool areFriends = UsersAreFriends(senderId, receiverId);
                 bools[0] = areFriends;
                 UserAction userAction = await ctx.UserActions.FirstOrDefaultAsync
@@ -119,6 +119,14 @@ namespace SEP3_Tier3.Repositories.Implementation
                     bools[6] = userAction.IsFriendRequest;
                 }
 
+                bools[7] = false;
+                if (IsUserPage(receiverId))
+                {
+                    PageRating pageRating = await ctx.PageRatings.FirstOrDefaultAsync(pr => pr.UserId == senderId
+                        && pr.PageId == receiverId);
+                    bools[7] = pageRating != null;
+                }
+                
                 if (IsUserPage(senderId))
                     bools[5] = userAction?.IsFollowPage ?? false;
                 
@@ -135,8 +143,8 @@ namespace SEP3_Tier3.Repositories.Implementation
                         ? GetTotalNumberOfFriendsForUser(receiverId) : 0;
                 else 
                     relevantFriendsNumber = GetTotalNumberOfFollowersForGym(receiverId);
-
-                return new UserSocketsModel
+                
+                UserSocketsModel userSocketsModel = new UserSocketsModel
                 {
                     Id = user.Id,
                     Email = user.Email,
@@ -146,8 +154,21 @@ namespace SEP3_Tier3.Repositories.Implementation
                     Score = user.Score,
                     Address = user.Address,
                     UserStatus = bools,
-                    RelevantFriendsNumber = relevantFriendsNumber
+                    RelevantFriendsNumber = relevantFriendsNumber,
+                    Rating = 0
                 };
+
+                if (!IsUserPage(receiverId))
+                    return userSocketsModel;
+
+                double averageRating;
+                if (ctx.PageRatings.Any(pr => pr.PageId == receiverId))
+                    averageRating = ctx.PageRatings.Where(pr => pr.PageId == receiverId).Average(pr => pr.Rating);
+                else
+                    averageRating = 0;
+                Console.WriteLine("Page average rating is " + averageRating);
+                userSocketsModel.Rating = Convert.ToInt32(averageRating);
+                return userSocketsModel;
             }
         }
 
