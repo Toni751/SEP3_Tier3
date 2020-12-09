@@ -128,7 +128,8 @@ namespace SEP3_Tier3.Repositories.Implementation
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
                 try {
-                    Post post = await ctx.Posts.FirstAsync(p => p.Id == postId);
+                    Post post = await ctx.Posts.Where(p => p.Id == postId)
+                        .Include(p => p.Comments).FirstAsync();
                     ctx.Posts.Remove(post);
                     await ctx.SaveChangesAsync();
                 }

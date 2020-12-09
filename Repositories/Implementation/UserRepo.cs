@@ -288,9 +288,113 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                try {
-                    User user = await ctx.Users.FirstAsync(u => u.Id == userId);
+                try
+                {
+                    
+                    var comments = ctx.Comment.Where(c => c.Owner.Id == userId).ToList();
+                    foreach (var comment in comments)
+                    {
+                        ctx.Comment.Remove(comment);
+                    }
+
+                    Console.WriteLine("comment");
+                    await ctx.SaveChangesAsync();
+                    
+                    var diets = ctx.Diet.Where(c => c.Owner.Id == userId).ToList();
+                    foreach (var diet in diets)
+                    {
+                        var dietMeals = ctx.DietMeals.Where(d => d.DietId == diet.Id).ToList();
+                        foreach (var dietMeal in dietMeals)
+                        {
+                            ctx.DietMeals.Remove(dietMeal);
+                        }
+                        Console.WriteLine("dietmeals");
+                        await ctx.SaveChangesAsync();
+                        ctx.Diet.Remove(diet);
+                    }
+                    Console.WriteLine("diet");
+                    await ctx.SaveChangesAsync();
+                    
+                    var trainings = ctx.Training.Where(c => c.Owner.Id == userId).ToList();
+                    foreach (var training in trainings)
+                    {
+                        var trainingExercises = ctx.TrainingExercises.Where(t => t.TrainingId == training.Id).ToList();
+                        foreach (var trainingExercise in trainingExercises)
+                        {
+                            ctx.TrainingExercises.Remove(trainingExercise);
+                        }
+                        Console.WriteLine("trainingexercise");
+                        await ctx.SaveChangesAsync();
+                        ctx.Training.Remove(training);
+                    }
+                    Console.WriteLine("training");
+                    await ctx.SaveChangesAsync();
+                    
+                    var friendships = ctx.Friendships.Where(c => c.FirstUserId == userId || c.SecondUserId == userId).ToList();
+                    foreach (var friendship in friendships)
+                    {
+                        ctx.Friendships.Remove(friendship);
+                    }
+                    Console.WriteLine("friendship");
+                    await ctx.SaveChangesAsync();
+                    
+                    var messages = ctx.Messages.Where(c => c.ReceiverId == userId || c.SenderId == userId).ToList();
+                    foreach (var message in messages)
+                    {
+                        ctx.Messages.Remove(message);
+                    }
+                    Console.WriteLine("messsages");
+                    await ctx.SaveChangesAsync();
+                    
+                    var notifications = ctx.Notifications.Where(c => c.ReceiverId == userId || c.SenderId == userId).ToList();
+                    foreach (var notification in notifications)
+                    {
+                        ctx.Notifications.Remove(notification);
+                    }
+                    Console.WriteLine("notifiaction");
+                    await ctx.SaveChangesAsync();
+                    
+                    var pageRatings = ctx.PageRatings.Where(c => c.UserId == userId || c.PageId == userId).ToList();
+                    foreach (var pageRating in pageRatings)
+                    {
+                        ctx.PageRatings.Remove(pageRating);
+                    }
+                    Console.WriteLine("pageratings");
+                    await ctx.SaveChangesAsync();
+                    
+                    var postActions = ctx.PostActions.Where(c => c.UserId == userId).ToList();
+                    foreach (var postAction in postActions)
+                    {
+                        ctx.PostActions.Remove(postAction);
+                    }
+                    Console.WriteLine("postactions");
+                    await ctx.SaveChangesAsync();
+                    
+                    var posts = ctx.Posts.Where(c => c.Owner.Id == userId).Include(c => c.Comments).ToList();
+                    foreach (var post in posts)
+                    {
+                        ctx.Posts.Remove(post);
+                    }
+                    Console.WriteLine("posts");
+                    await ctx.SaveChangesAsync();
+                    
+                    var userActions = ctx.UserActions.Where(c => c.ReceiverId == userId || c.SenderId == userId).ToList();
+                    foreach (var userAction in userActions)
+                    {
+                        ctx.UserActions.Remove(userAction);
+                    }
+                    Console.WriteLine("useractions");
+                    await ctx.SaveChangesAsync();
+                    
+                    
+                    
+                    
+                    User user = await ctx.Users.Where(u => u.Id == userId)
+                        .Include(u => u.Address)
+                        .Include(u => u.Posts).ThenInclude(p => p.Comments)
+                        .FirstAsync();
                     ctx.Users.Remove(user);
+                    Console.WriteLine("last");
                     await ctx.SaveChangesAsync();
                 }
                 catch (Exception e) {
@@ -377,12 +481,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                             returnId = await AddNotification("USER_FOLLOW_PAGE", modelActionSockets.SenderId, modelActionSockets.ReceiverId);
                             Console.WriteLine("Returning notification id: " + returnId);
                         }
-                        else {
-                            Notification notification = await ctx.Notifications.FirstAsync(n =>
-                                n.SenderId == modelActionSockets.SenderId && n.ReceiverId == modelActionSockets.ReceiverId
-                                                                          && n.NotificationType.Equals("USER_FOLLOW_PAGE"));
-                            ctx.Notifications.Remove(notification);
-                        }
+                        // else {
+                        //     Notification notification = await ctx.Notifications.FirstAsync(n =>
+                        //         n.SenderId == modelActionSockets.SenderId && n.ReceiverId == modelActionSockets.ReceiverId
+                        //                                                   && n.NotificationType.Equals("USER_FOLLOW_PAGE"));
+                        //     ctx.Notifications.Remove(notification);
+                        // }
                         break;
                     case "USER_REPORT":
                         if (userAction != null)
@@ -465,12 +569,12 @@ namespace SEP3_Tier3.Repositories.Implementation
                     {
                         UserId = modelActionSockets.SenderId,
                         PageId = modelActionSockets.ReceiverId,
-                        Rating = (int) modelActionSockets.Value
+                        Rating = int.Parse(modelActionSockets.Value.ToString())
                     });
                 }
                 else
                 {
-                    pageRating.Rating = (int) modelActionSockets.Value;
+                    pageRating.Rating = int.Parse(modelActionSockets.Value.ToString());
                     ctx.PageRatings.Update(pageRating);
                 }
 

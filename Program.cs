@@ -468,6 +468,8 @@ namespace SEP3_Tier3
                         });
                         postOwnerId++;
                     }
+
+                    await ctx.SaveChangesAsync();
                 }
 
                 await ctx.SaveChangesAsync();
@@ -477,6 +479,7 @@ namespace SEP3_Tier3
                     Console.WriteLine("Added post with id " + i);
                 }
 
+                list.Reverse();
                 return list.ToArray();
             }
         }
