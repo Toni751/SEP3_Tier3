@@ -4,6 +4,9 @@ using SEP3_Tier3.SocketControllers.Implementation;
 
 namespace SEP3_Tier3.Core
 {
+    /// <summary>
+    /// Class for managing all sockets controllers
+    /// </summary>
     public class SocketControllerFactory
     {
         private RepositoriesFactory repositoriesFactory;
@@ -14,6 +17,10 @@ namespace SEP3_Tier3.Core
         private IDietSocket dietSocket;
         private IChatSocket chatSocket;
 
+        /// <summary>
+        /// One-argument constructor for initializing the repositories factory
+        /// </summary>
+        /// <param name="repositoriesFactory">the repositories factory</param>
         public SocketControllerFactory(RepositoriesFactory repositoriesFactory)
         {
             this.repositoriesFactory = repositoriesFactory;

@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing the sockets version of the notification model
+    /// </summary>
     public class NotificationSockets
     {
         [JsonPropertyName("id")]

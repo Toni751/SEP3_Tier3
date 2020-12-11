@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a user action (such as friend request, report, follow page etc)
+    /// </summary>
     public class UserAction
     {
         public int SenderId { get; set; }

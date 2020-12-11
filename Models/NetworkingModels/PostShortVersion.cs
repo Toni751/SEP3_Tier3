@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing the short version of a post, without likes and comments
+    /// </summary>
     public class PostShortVersion
     {
         [JsonPropertyName("id")]

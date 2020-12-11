@@ -10,11 +10,18 @@ using SEP3_Tier3.Repositories;
 
 namespace SEP3_Tier3.SocketControllers.Implementation
 {
+    /// <summary>
+    /// Class for handling post-related sockets requests
+    /// </summary>
     public class PostSocket : IPostSocket
     {
         private IPostRepo postRepo;
         private readonly string FILE_PATH;
 
+        /// <summary>
+        /// One-argument constructor initializing the post repository
+        /// </summary>
+        /// <param name="postRepo">the given value for the post repo</param>
         public PostSocket(IPostRepo postRepo)
         {
             this.postRepo = postRepo;
@@ -54,6 +61,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
         }
 
+        /// <summary>
+        /// Persists a given post to the database
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddPostAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -83,6 +95,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a post with its owner, by id and with the sender status regarding it
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetPostByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -104,14 +121,6 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                     var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
                     images.Add(readAvatarFile);
                 }
-
-                // if (post.Comments != null && post.Comments.Count > 0) {
-                //     foreach (var comment in post.Comments)
-                //     {
-                //         var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Users/{comment.Owner.UserId}/avatar.jpg");
-                //         images.Add(ImagesUtil.ResizeImage(readAvatarFile, 20, 20));
-                //     }
-                // }
             }
             return new ActualRequest
             {
@@ -120,6 +129,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Returns a list with the ids of the latest posts for a user(i.e. made by him/friends/page he/she follows)
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetPostsForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -130,24 +144,6 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 ActionType = ActionType.POST_GET_FOR_USER.ToString(),
                 Argument = JsonSerializer.Serialize(postIds)
             };
-            // List<byte[]> images = new List<byte[]>();
-            // if (posts != null)
-            // {
-            //     foreach (var post in posts)
-            //     {
-            //         var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
-            //         images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
-            //     }
-            //     
-            //     foreach (var post in posts)
-            //     {
-            //         if (post.HasImage) {
-            //             var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
-            //             images.Add(readAvatarFile);
-            //         }
-            //     }
-            //     
-            // }
             return new ActualRequest
             {
                 Request = responseRequest,
@@ -155,6 +151,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Returns a list with the ids of the latest posts created by a user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetPostsByUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -165,24 +166,6 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 ActionType = ActionType.POST_GET_BY_USER.ToString(),
                 Argument = JsonSerializer.Serialize(postIds)
             };
-            //List<byte[]> images = new List<byte[]>();
-            // if (posts != null)
-            // {
-            //     foreach (var post in posts)
-            //     {
-            //         var readOwnerAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/{post.Owner.UserId}/avatar.jpg");
-            //         images.Add(ImagesUtil.ResizeImage(readOwnerAvatar, 20, 20));  
-            //     }
-            //     
-            //     foreach (var post in posts)
-            //     {
-            //         if (post.HasImage) {
-            //             var readAvatarFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
-            //             images.Add(readAvatarFile);
-            //         }
-            //     }
-            //     
-            // }
             return new ActualRequest
             {
                 Request = responseRequest,
@@ -191,6 +174,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Edits a given post
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> UpdatePostAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -217,6 +205,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a post with a given id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeletePostAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -238,6 +231,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Persists a new post action to the database
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> PostPostActionAsync(ActualRequest actualRequest)
         {
             PostActionSockets postAction =
@@ -256,6 +254,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Adds a given comment to a given post
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddCommentToPostAsync(ActualRequest actualRequest)
         {
             CommentForPost comment =
@@ -273,6 +276,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a comment with a given id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteCommentFromPostAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -292,6 +300,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
         
+        /// <summary>
+        /// Returns a list with all the users who reacted to a given post, in alphabetical order
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetAllLikesForPostAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -321,6 +334,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Returns a list with all the comments belonging to a given post, in reverse chronological order
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetAllCommentsForPostAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;

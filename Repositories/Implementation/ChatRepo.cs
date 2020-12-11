@@ -6,10 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using SEP3_T3.Persistance;
 using SEP3_Tier3.Models;
+using SEP3_Tier3.Repositories.UnitTestInterfaces;
 
 namespace SEP3_Tier3.Repositories.Implementation
 {
-    public class ChatRepo : IChatRepo
+    /// <summary>
+    /// The chat repository class for accessing the database for chat requests
+    /// </summary>
+    public class ChatRepo : IChatRepo, IChatRepoTest
     {
         public async Task<List<int>> AddMessageAsync(MessageSocketsModel message)
         {
@@ -65,49 +69,42 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                List<Message> userMessages = ctx.Messages.Where(m => m.SenderId == userId || m.ReceiverId == userId)
+                return GetLastMessagesForUserWithDbContext(ctx, userId, offset);
+            }
+        }
+
+        public List<UserShortVersionWithMessage> GetLastMessagesForUserWithDbContext(ShapeAppDbContext ctx, int userId, int offset)
+        {
+            List<Message> userMessages = ctx.Messages.Where(m => m.SenderId == userId || m.ReceiverId == userId)
                     .OrderByDescending(m => m.TimeStamp).ToList();
-                foreach (var userMessage in userMessages)
-                {
-                    Console.WriteLine("Message id is " + userMessage.Id + " with receiver " + userMessage.ReceiverId);
-                }
-
-                Console.WriteLine("Total number of messages for user " + userId + " is " + userMessages.Count);
-
+                
                 List<int> messagedUserIds = new List<int>();
                 List<int> lastMessageIds = new List<int>();
-                if (!userMessages.Any())
-                    return null;
+                if (!userMessages.Any() || offset < 0)
+                    return new List<UserShortVersionWithMessage>();
 
                 foreach (var message in userMessages)
                 {
-                    Console.WriteLine("Message id is " + message.Id);
                     if (message.SenderId == userId)
                     {
                         if (!messagedUserIds.Contains(message.ReceiverId))
                         {
-                            Console.WriteLine("Here 1 with message " + message.Id);
                             messagedUserIds.Add(message.ReceiverId);
                             lastMessageIds.Add(message.Id);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Attempting with message " + message.Id + " with sender " + message.SenderId);
                         if (!messagedUserIds.Contains(message.SenderId))
                         {
-                            Console.WriteLine("Here 2 with message " + message.Id);
                             messagedUserIds.Add(message.SenderId);
                             lastMessageIds.Add(message.Id);
                         }
                     }
                 }
-
-                // Console.WriteLine("Messaged user ids count is " + messagedUserIds.Count);
-                // Console.WriteLine("User last messaged user ids: " + messagedUserIds[0] + " " + messagedUserIds[1]);
-                // Console.WriteLine("Last messages length is " + lastMessageIds.Count);
+                
                 if (offset >= lastMessageIds.Count)
-                    return null;
+                    return new List<UserShortVersionWithMessage>();
 
                 Console.WriteLine("Hello");
                 List<UserShortVersionWithMessage> lastMessages = new List<UserShortVersionWithMessage>();
@@ -138,7 +135,6 @@ namespace SEP3_Tier3.Repositories.Implementation
                 }
 
                 return lastMessages;
-            }
         }
 
         public List<MessageSocketsModel> GetConversationForUsers(int firstUserId, int secondUserId, int offset)

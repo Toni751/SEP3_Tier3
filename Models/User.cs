@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing both regular users and gyms
+    /// </summary>
     public class User
     {
         [JsonPropertyName("id")]

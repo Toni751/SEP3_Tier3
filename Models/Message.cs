@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a private message between 2 users
+    /// </summary>
     public class Message
     {
         public int Id { get; set; }

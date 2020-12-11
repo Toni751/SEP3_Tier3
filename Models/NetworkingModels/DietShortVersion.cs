@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a diet without meals
+    /// </summary>
     public class DietShortVersion
     {
         [JsonPropertyName("id")]

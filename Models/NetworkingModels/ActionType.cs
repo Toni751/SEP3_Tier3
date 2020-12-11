@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Enum for storing all the action types used in the system
+    /// </summary>
     [Flags]
     public enum ActionType
     {

@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing the credentials necessary for users to login
+    /// </summary>
     public class LoginCredentials
     {
         [JsonPropertyName("email")]

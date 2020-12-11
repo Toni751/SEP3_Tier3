@@ -4,6 +4,9 @@ using SEP3_Tier3.Repositories.Implementation;
 
 namespace SEP3_Tier3.Core
 {
+    /// <summary>
+    /// Class for managing all the repositories
+    /// </summary>
     public class RepositoriesFactory
     {
         private IAdminRepo adminRepo;

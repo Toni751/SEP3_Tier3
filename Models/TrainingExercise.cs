@@ -1,5 +1,8 @@
 ﻿namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing an association between a training and an exercise
+    /// </summary>
     public class TrainingExercise
     {
         public int TrainingId { get; set; }

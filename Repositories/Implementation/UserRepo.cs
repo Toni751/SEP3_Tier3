@@ -14,6 +14,9 @@ using SEP3_Tier3.Models;
 
 namespace SEP3_Tier3.Repositories.Implementation
 {
+    /// <summary>
+    /// The user repository class for accessing the database for user requests
+    /// </summary>
     public class UserRepo : IUserRepo
     {
         private List<int> onlineUserIds;
@@ -750,22 +753,6 @@ namespace SEP3_Tier3.Repositories.Implementation
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                // List<User> userFriends = new List<User>();
-                // List<User> temp = ctx.Friendships.Where(fr => fr.FirstUserId == userId)
-                //     .Select(fr => fr.SecondUser).ToList();
-                // userFriends.AddRange(temp);
-                // temp = ctx.Friendships.Where(fr => fr.SecondUserId == userId)
-                //     .Select(fr => fr.FirstUser).ToList();
-                // userFriends.AddRange(temp);
-                //
-                // for (int i = 0; i < userFriends.Count; i++)
-                // {
-                //     if (!onlineUserIds.Contains(userFriends[i].Id))
-                //     {
-                //         userFriends.RemoveAt(i);
-                //         i--;
-                //     }
-                // }
                 List<int> onlineFriendIds = new List<int>();
                 foreach (var onlineUserId in onlineUserIds) {
                     if(UsersAreFriends(userId, onlineUserId))

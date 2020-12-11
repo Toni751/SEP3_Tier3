@@ -15,15 +15,25 @@ using SEP3_Tier3.SocketControllers;
 
 namespace SEP3_Tier3
 {
+    /// <summary>
+    /// Server socket class for establishing sockets connections, maintaining them, and processing requests/responses
+    /// </summary>
     public class ServerSocket
     {
         private SocketControllerFactory socketFactory;
 
+        /// <summary>
+        /// One-argument constructor which initializes the sockets controllers factory, with instances responsible for handling client requests
+        /// </summary>
+        /// <param name="socketFactory">the sockets controller factory</param>
         public ServerSocket(SocketControllerFactory socketFactory)
         {
             this.socketFactory = socketFactory;
         }
 
+        /// <summary>
+        /// Method for starting the server and awaiting for new incoming connections, which are handled in separate threads
+        /// </summary>
         public void Start()
         {
             Console.WriteLine("Starting server..");
@@ -43,6 +53,10 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// The method for handling a client request, reading it (with images, if any) and responding accordingly (with images, if any)
+        /// </summary>
+        /// <param name="client">the new client connection to be handled</param>
         private async void HandleClientRequest(TcpClient client)
         {
             NetworkStream stream = client.GetStream();

@@ -5,58 +5,23 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SEP3_T3.Persistance;
 using SEP3_Tier3.Models;
+using SEP3_Tier3.Repositories.UnitTestInterfaces;
 
 namespace SEP3_Tier3.Repositories.Implementation
 {
-    public class AdminRepo : IAdminRepo
+    /// <summary>
+    /// The admin repository class for accessing the database for admin requests
+    /// </summary>
+    public class AdminRepo : IAdminRepo, IAdminRepoTest
     {
         public async Task<List<UserShortVersion>> GetAdminUsersAsync(int limit, int offset)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
             {
-                var userReportList = ctx.UserActions.Where(u => u.IsReport)
-                    .GroupBy(ua => ua.ReceiverId)
-                    .Select(group => new
-                    {
-                        ReportReceiverId = group.Key,
-                        ReportCount = group.Count()
-                    })
-                    .OrderByDescending(ur => ur.ReportCount).ToList();
-
-                List<int> allUserIds = ctx.Users.Select(u => u.Id).ToList();
-                List<int> allReportedUserIds = new List<int>();
-                
-                foreach (var userReport in userReportList)
-                {
-                    Console.WriteLine($"User {userReport.ReportReceiverId} was reported {userReport.ReportCount} times");
-                    allReportedUserIds.Add(userReport.ReportReceiverId);
-                }
-
-                for (int i = 0; i < allUserIds.Count; i++)
-                {
-                    if (!CheckIfIdIsInList(allUserIds[i], allReportedUserIds))
-                        userReportList.Add(new {
-                            ReportReceiverId = allUserIds[i],
-                            ReportCount = 0
-                        });
-                }
-
-                if (offset > userReportList.Count)
-                    return null;
-
-                List<UserShortVersion> users = new List<UserShortVersion>();
-                for (int i = offset; i < offset + limit; i++)
-                {
-                    if (i >= userReportList.Count)
-                        break;
-
-                    users.Add(GetUserShortVersionById(userReportList[i].ReportReceiverId));
-                }
-
-                return users;
+                return GetAdminUsersWithDbContextAsync(ctx, limit, offset);
             }
         }
-
+        
         private bool CheckIfIdIsInList(int id, List<int> list)
         {
             for (int i = 0; i < list.Count; i++)
@@ -96,8 +61,7 @@ namespace SEP3_Tier3.Repositories.Implementation
                 
                 if (offset > postReportList.Count)
                     return null;
-
-                //List<PostShortVersion> posts = new List<PostShortVersion>();
+                
                 List<int> postIds = new List<int>();
                 for (int i = offset; i < offset + limit; i++)
                 {
@@ -105,15 +69,6 @@ namespace SEP3_Tier3.Repositories.Implementation
                         break;
 
                     postIds.Add(postReportList[i].ReportPostId);
-                    // Post post = await ctx.Posts.FirstAsync(p => p.Id == postReportList[i].ReportPostId);
-                    // posts.Add(new PostShortVersion
-                    // {
-                    //     Id = post.Id,
-                    //     Title = post.Title,
-                    //     Content = post.Content,
-                    //    // Owner = GetUserShortVersionById(post.Owner.Id),
-                    //     TimeStamp = post.TimeStamp
-                    // });
                 }
                 return postIds;
             }
@@ -129,11 +84,9 @@ namespace SEP3_Tier3.Repositories.Implementation
             }
         }
 
-        private UserShortVersion GetUserShortVersionById(int id)
+        private UserShortVersion GetUserShortVersionById(ShapeAppDbContext ctx, int id)
         {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-                User user = ctx.Users.First(u => u.Id == id);
+            User user = ctx.Users.First(u => u.Id == id);
                 string accountType = user.Address != null ? "PageOwner" : "RegularUser";
                 return new UserShortVersion
                 {
@@ -141,7 +94,50 @@ namespace SEP3_Tier3.Repositories.Implementation
                     UserFullName = user.Name,
                     AccountType = accountType
                 };
+        }
+
+        public List<UserShortVersion> GetAdminUsersWithDbContextAsync(ShapeAppDbContext ctx, int limit, int offset)
+        {
+            var userReportList = ctx.UserActions.Where(u => u.IsReport)
+                .GroupBy(ua => ua.ReceiverId)
+                .Select(group => new
+                {
+                    ReportReceiverId = group.Key,
+                    ReportCount = group.Count()
+                })
+                .OrderByDescending(ur => ur.ReportCount).ToList();
+
+            List<int> allUserIds = ctx.Users.Select(u => u.Id).ToList();
+            List<int> allReportedUserIds = new List<int>();
+                
+            foreach (var userReport in userReportList)
+            {
+                Console.WriteLine($"User {userReport.ReportReceiverId} was reported {userReport.ReportCount} times");
+                allReportedUserIds.Add(userReport.ReportReceiverId);
             }
+
+            for (int i = 0; i < allUserIds.Count; i++)
+            {
+                if (!CheckIfIdIsInList(allUserIds[i], allReportedUserIds))
+                    userReportList.Add(new {
+                        ReportReceiverId = allUserIds[i],
+                        ReportCount = 0
+                    });
+            }
+
+            List<UserShortVersion> users = new List<UserShortVersion>();
+            if (offset > userReportList.Count || offset < 0)
+                return users;
+            
+            for (int i = offset; i < offset + limit; i++)
+            {
+                if (i >= userReportList.Count)
+                    break;
+
+                users.Add(GetUserShortVersionById(ctx, userReportList[i].ReportReceiverId));
+            }
+
+            return users;
         }
     }
 }

@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing users used in the search bar
+    /// </summary>
     public class SearchBarUser
     {
         [JsonPropertyName("userId")]

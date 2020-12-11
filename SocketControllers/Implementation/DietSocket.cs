@@ -7,10 +7,17 @@ using SEP3_Tier3.Repositories;
 
 namespace SEP3_Tier3.SocketControllers.Implementation
 {
+    /// <summary>
+    /// Class for handling diet-related sockets requests
+    /// </summary>
     public class DietSocket : IDietSocket
     {
         private IDietRepo dietRepo;
 
+        /// <summary>
+        /// One-argument constructor initializing the diet repository
+        /// </summary>
+        /// <param name="dietRepo">the given value for the diet repo</param>
         public DietSocket(IDietRepo dietRepo)
         {
             this.dietRepo = dietRepo;
@@ -43,6 +50,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
         }
 
+        /// <summary>
+        /// Persists a given diet to the database
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddDietAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -60,6 +72,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a diet with its owner, by id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetDietByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -77,6 +94,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a list with public diets
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetPublicDiets(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -94,6 +116,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a list of private diets belonging to a given user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetPrivateDietsForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -111,6 +138,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Edits a given diet
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> EditDietAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -128,6 +160,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a diet with a given id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteDietAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -146,6 +183,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Adds a given meal to a given diet
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddMealToDietAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -163,6 +205,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Edits a given meal in a given diet
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> EditMealInDietAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -180,6 +227,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a given meal from a given diet
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteMealFromDietAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;

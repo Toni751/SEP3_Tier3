@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing the sockets version of the message model
+    /// </summary>
     public class MessageSocketsModel
     {
         [JsonPropertyName("id")]

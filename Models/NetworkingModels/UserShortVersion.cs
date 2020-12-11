@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for representing a short version of the user model
+    /// </summary>
     public class UserShortVersion
     {
         [JsonPropertyName("userId")]

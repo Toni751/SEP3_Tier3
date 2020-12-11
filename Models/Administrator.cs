@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing an administrator's details
+    /// </summary>
     public class Administrator
     {
         [JsonPropertyName("id")]

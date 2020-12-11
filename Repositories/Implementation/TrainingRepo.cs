@@ -10,6 +10,9 @@ using SEP3_Tier3.Models;
 
 namespace SEP3_Tier3.Repositories.Implementation
 {
+    /// <summary>
+    /// The training repository class for accessing the database for training requests
+    /// </summary>
     public class TrainingRepo : ITrainingRepo
     {
         public async Task<int> AddTrainingAsync(TrainingSocketsModelWithOwner training)

@@ -3,6 +3,9 @@ using SEP3_Tier3.Models;
 
 namespace SEP3_T3.Persistance
 {
+    /// <summary>
+    /// Db context class used for accessing the database
+    /// </summary>
     public class ShapeAppDbContext : DbContext
     {
       //  public DbSet<Address> Addresses { get; set; }

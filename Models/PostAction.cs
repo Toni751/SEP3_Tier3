@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a post action (such as like or report)
+    /// </summary>
     public class PostAction
     {
         public int UserId { get; set; }

@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing the sockets version of the post action model
+    /// </summary>
     public class PostActionSockets
     {
         [JsonPropertyName("userId")]

@@ -9,6 +9,9 @@ using SEP3_Tier3.Models;
 
 namespace SEP3_Tier3.Repositories.Implementation
 {
+    /// <summary>
+    /// The diet repository class for accessing the database for diet requests
+    /// </summary>
     public class DietRepo : IDietRepo
     {
         public async Task<int> AddDietAsync(DietSocketsModelWithOwner diet)

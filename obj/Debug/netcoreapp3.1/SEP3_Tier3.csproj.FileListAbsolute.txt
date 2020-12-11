@@ -120,3 +120,7 @@ C:\Users\Przemo\RiderProjects\SEP3_Tier3UpdateV1\obj\Debug\netcoreapp3.1\SEP3_Ti
 C:\Users\Przemo\RiderProjects\SEP3_Tier3UpdateV1\obj\Debug\netcoreapp3.1\SEP3_Tier3.dll
 C:\Users\Przemo\RiderProjects\SEP3_Tier3UpdateV1\obj\Debug\netcoreapp3.1\SEP3_Tier3.pdb
 C:\Users\Przemo\RiderProjects\SEP3_Tier3UpdateV1\obj\Debug\netcoreapp3.1\SEP3_Tier3.genruntimeconfig.cache
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\xunit.abstractions.dll
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\xunit.assert.dll
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\xunit.core.dll
+C:\Users\Toni\RiderProjects\SEP3_Tier3\bin\Debug\netcoreapp3.1\xunit.execution.dotnet.dll

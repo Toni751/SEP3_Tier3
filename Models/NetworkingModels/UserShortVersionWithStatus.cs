@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a user short version with the corresponding fitness status
+    /// </summary>
     public class UserShortVersionWithStatus : UserShortVersion
     {
         // 0: you shared trainings with receiver

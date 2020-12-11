@@ -12,11 +12,18 @@ using SkiaSharp;
 
 namespace SEP3_Tier3.SocketControllers.Implementation
 {
+    /// <summary>
+    /// Class for handling user-related sockets requests
+    /// </summary>
     public class UserSocket : IUserSocket
     {
         private IUserRepo userRepo;
         private readonly string FILE_PATH;
 
+        /// <summary>
+        /// One-argument constructor initializing the user repository
+        /// </summary>
+        /// <param name="userRepo">the given value for the user repo</param>
         public UserSocket(IUserRepo userRepo)
         {
             this.userRepo = userRepo;
@@ -69,6 +76,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
         }
 
+        /// <summary>
+        /// Retrieves a user short version instance with the given user id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetUserShortVersionById(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -97,6 +109,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Logs in our out a user and returns a list with his online friends ids, so that they can be notified
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest LogoutUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -114,6 +131,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Gets a list with all the online friends belonging to a given user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetOnlineFriendsForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -143,6 +165,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Increments a given user's score by a given amount
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> IncrementUserScoreAsync(ActualRequest actualRequest)
         {
             List<int> integers = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
@@ -159,6 +186,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a list of the target user's friends, or common friends with the sender
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetFriendsForUser(ActualRequest actualRequest)
         {
             List<int> integers = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
@@ -187,6 +219,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Gets a list with all the notifications belonging to a given user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetNotificationsForUser(ActualRequest actualRequest)
         {
             int userId = Convert.ToInt32(actualRequest.Request.Argument.ToString());
@@ -203,6 +240,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Returns a list with all the gyms in a given city
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetGymsByCity(ActualRequest actualRequest)
         {
             string city = actualRequest.Request.Argument.ToString();
@@ -231,6 +273,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves the users whose username starts with the given filter string, if any
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetUsersByFilter(ActualRequest actualRequest)
         {
             string filterString = actualRequest.Request.Argument.ToString();
@@ -246,7 +293,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 Images = null
             };
         }
-
+        /// <summary>
+        /// Deletes a notification with the given id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteNotificationAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -263,7 +314,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 Images = null
             };
         }
-
+        /// <summary>
+        /// Creates a new user action and its corresponding notification, if any
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> PostUserActionAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -290,6 +345,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a user with a given id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteUserAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -318,6 +378,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Persists a given user to the database
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddUserAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -335,17 +400,8 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             {
                 try
                 {
-                    Console.WriteLine($"************* {FILE_PATH}/Users/defaultAvatar.jpg");
-
                     byte[] readDefaultAvatar = File.ReadAllBytes($"{FILE_PATH}/Users/defaultAvatar.jpg");
-
-                    Console.WriteLine($"************* After first");
-
                     byte[] readDefaultBg = File.ReadAllBytes($"{FILE_PATH}/Users/defaultBg.jpg");
-
-
-                    Console.WriteLine($"************* After second");
-
                     ImagesUtil.WriteImageToPath(readDefaultAvatar, $"{FILE_PATH}/Users/{result}", "/avatar.jpg");
                     ImagesUtil.WriteImageToPath(readDefaultBg, $"{FILE_PATH}/Users/{result}", "/background.jpg");
                 }
@@ -362,6 +418,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves the user with the given email and password, if any
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> LoginAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -401,6 +462,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a user by id, and his status regarding the sender
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetUserByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -435,11 +501,14 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Edits a given user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> UpdateUserAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
-
-            Console.WriteLine("********:" + request.Argument);
 
             UserSocketsModel user = JsonSerializer.Deserialize<UserSocketsModel>(request.Argument.ToString());
             bool result = await userRepo.EditUserAsync(user);
@@ -450,31 +519,15 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
             if (actualRequest.Images != null && actualRequest.Images.Any())
             {
-                //if (actualRequest.Images[0])
-                //{
                 if (user.Email != null)
                 {
                     ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}", "/avatar.jpg");
-                    Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only avatar");
                 }
                 else
                 {
                     ImagesUtil.WriteImageToPath(actualRequest.Images[0], $"{FILE_PATH}/Users/{user.Id}",
                         "/background.jpg");
-                    Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: only bg");
                 }
-
-                // if (user.ProfileBackground.Length > 2)
-                // {
-                // ImagesUtil.WriteImageToPath(actualRequest.Images[1], $"{FILE_PATH}/Users/{result}", "/background.jpg");
-                // Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%: bg and avatar");
-                // }
-
-                // }
-                // else if (user.ProfileBackground.Length > 2)
-                // {
-
-                //}
             }
 
             return new ActualRequest

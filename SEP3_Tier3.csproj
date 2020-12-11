@@ -13,6 +13,7 @@
       </PackageReference>
       <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.20" />
       <PackageReference Include="SkiaSharp" Version="2.80.2" />
+      <PackageReference Include="xunit" Version="2.4.1" />
     </ItemGroup>
 
 </Project>

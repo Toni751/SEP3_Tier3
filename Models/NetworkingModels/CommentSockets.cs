@@ -4,6 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing the sockets version for the comment model
+    /// </summary>
     public class CommentSockets
     {
         [JsonPropertyName("id")]

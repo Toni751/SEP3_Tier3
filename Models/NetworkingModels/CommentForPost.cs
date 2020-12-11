@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a comment for a post
+    /// </summary>
     public class CommentForPost
     {
         public int Id { get; set; }

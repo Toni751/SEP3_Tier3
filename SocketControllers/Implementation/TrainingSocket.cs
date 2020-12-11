@@ -7,10 +7,17 @@ using SEP3_Tier3.Repositories;
 
 namespace SEP3_Tier3.SocketControllers.Implementation
 {
+    /// <summary>
+    /// Class for handling training-related sockets requests
+    /// </summary>
     public class TrainingSocket : ITrainingSocket
     {
         private ITrainingRepo trainingRepo;
 
+        /// <summary>
+        /// One-argument constructor initializing the training repository
+        /// </summary>
+        /// <param name="trainingRepo">the given value for the training repo</param>
         public TrainingSocket(ITrainingRepo trainingRepo)
         {
             this.trainingRepo = trainingRepo;
@@ -49,6 +56,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
         }
 
+        /// <summary>
+        /// Persists a given training to the database
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddTrainingAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -67,6 +79,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a training with its owner, by id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetTrainingByIdAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -84,6 +101,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a list with public trainings
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetPublicTrainings(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -101,6 +123,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a list of private trainings belonging to a given user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetPrivateTrainingsForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -118,6 +145,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a list of trainings for a given user(public + his own private trainings)
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetTrainingsForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -135,6 +167,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Retrieves a list of trainings in a given week for a given user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetTrainingsInWeekForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -152,6 +189,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
         
+        /// <summary>
+        /// Retrieves a list of trainings in the current for a given user
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetTrainingsTodayForUser(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -169,6 +211,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Edits a given training
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> EditTrainingAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -186,6 +233,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a training with a given id
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteTrainingAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -204,6 +256,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Adds a given exercise to a given training
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddExerciseToTrainingAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -222,6 +279,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Edits a given exercise in a given training
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> EditExerciseInTrainingAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -239,6 +301,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a given exercise from a given training
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteExerciseFromTrainingAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;

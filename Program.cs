@@ -10,8 +10,14 @@ using SEP3_Tier3.Models;
 
 namespace SEP3_Tier3
 {
+    /// <summary>
+    /// Main class for running the programme
+    /// </summary>
     class Program
     {
+        /// <summary>
+        /// Main method for instantiating the factories and starting the server
+        /// </summary>
         static async Task Main(string[] args)
         {
             RepositoriesFactory repoFactory = new RepositoriesFactory();
@@ -21,6 +27,9 @@ namespace SEP3_Tier3
             serverSocket.Start();
         }
 
+        /// <summary>
+        /// Method for seeding the database
+        /// </summary>
         private static async Task SeedDb()
         {
             var seededUserIds = await SeedUsers();
@@ -34,6 +43,10 @@ namespace SEP3_Tier3
             await SeedChat(seededUserIds);
         }
 
+        /// <summary>
+        /// Method for seeding the database users
+        /// </summary>
+        /// <returns>the ids of the seeded users</returns>
         private static async Task<int[]> SeedUsers()
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -79,6 +92,10 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// Method for seeding the user's images
+        /// </summary>
+        /// <param name="seededUserIds">the seeded users ids</param>
         private static void SeedUserImages(int[] seededUserIds)
         {
             try
@@ -99,6 +116,10 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// Method for seeding the user's user actions
+        /// </summary>
+        /// <param name="seededUserIds">the seeded users ids</param>
         private static async Task SeedUserActions(int[] seededUserIds)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -432,6 +453,10 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// Method for seeding the user's posts
+        /// </summary>
+        /// <param name="seededUserIds">the seeded users ids</param>
         private static async Task<int[]> SeedPosts(int[] seededUserIds)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -492,6 +517,10 @@ namespace SEP3_Tier3
             return new DateTime(updatedDate.Year, updatedDate.Month, updatedDate.Day, updatedDate.Hour + randomDate, updatedDate.Minute, updatedDate.Second);
         }
 
+        /// <summary>
+        /// Method for seeding the posts' images
+        /// </summary>
+        /// <param name="seededPostIds">the seeded posts ids</param>
         private static void SeedPostImages(int[] seededPostIds)
         {
             List<int> postIdIndexesWithImages = new List<int> {2, 4, 5, 7, 8, 11, 12, 15, 16, 17, 20, 21, 23, 24};
@@ -510,6 +539,11 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// Method for seeding the seeded user's interaction with the seeded posts
+        /// </summary>
+        /// <param name="seededUserIds">the seeded users ids</param>
+        /// <param name="seededPostIds">the seeded posts ids</param>
         private static async Task SeedPostInteractions(int[] seededPostIds, int[] seededUserIds)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -583,6 +617,10 @@ namespace SEP3_Tier3
             return adjectives[random.Next(adjectives.Length)] + nouns[random.Next(nouns.Length)];
         }
 
+        /// <summary>
+        /// Method for seeding the user's trainings
+        /// </summary>
+        /// <param name="seededUserIds">the seeded users ids</param>
         private static async Task SeedTrainings(int[] seededUserIds)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -600,7 +638,7 @@ namespace SEP3_Tier3
                             Duration = random.Next(60) + 40,
                             IsPublic = i == 1,
                             IsCompleted = random.Next(2) == 0,
-                            TimeStamp = GetRandomDateTime(DateTime.Today.AddDays(-5)),
+                            TimeStamp = GetRandomTrainingTime(DateTime.Today.AddDays(-5), i),
                             Title = GetRandomString(),
                             Owner = ctx.Users.First(u => u.Id == userId),
                             Type = trainingTypes[random.Next(trainingTypes.Length)]
@@ -630,6 +668,19 @@ namespace SEP3_Tier3
             }
         }
 
+        private static DateTime GetRandomTrainingTime(DateTime minDate, int index)
+        {
+            var random = new Random();
+            int randomDate = random.Next(9) + 1;
+            DateTime updatedDate = minDate.AddDays(randomDate);
+            int hour = 10 + index * 2;
+            return new DateTime(updatedDate.Year, updatedDate.Month, updatedDate.Day, hour + randomDate, updatedDate.Minute, updatedDate.Second);
+        }
+
+        /// <summary>
+        /// Method for seeding the user's diets
+        /// </summary>
+        /// <param name="seededUserIds">the seeded users ids</param>
         private static async Task SeedDiets(int[] seededUserIds)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())
@@ -673,6 +724,10 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// Method for seeding the user's user chat messages
+        /// </summary>
+        /// <param name="seededUserIds">the seeded users ids</param>
         private static async Task SeedChat(int[] seededUserIds)
         {
             using (ShapeAppDbContext ctx = new ShapeAppDbContext())

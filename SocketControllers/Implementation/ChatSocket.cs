@@ -8,11 +8,18 @@ using SEP3_Tier3.Repositories;
 
 namespace SEP3_Tier3.SocketControllers.Implementation
 {
+    /// <summary>
+    /// Class for handling chat-related sockets requests
+    /// </summary>
     public class ChatSocket : IChatSocket
     {
         private IChatRepo chatRepo;
         private readonly string FILE_PATH;
 
+        /// <summary>
+        /// One-argument constructor initializing the chat repository
+        /// </summary>
+        /// <param name="chatRepo">the given value for the chat repo</param>
         public ChatSocket(IChatRepo chatRepo)
         {
             this.chatRepo = chatRepo;
@@ -36,6 +43,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
         }
 
+        /// <summary>
+        /// Persists a given message to the database and its corresponding notification
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> AddMessageAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -65,6 +77,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Deletes a message with a given id by setting its content to null and deleting its picture
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> DeleteMessageAsync(ActualRequest actualRequest)
         {
             Request request = actualRequest.Request;
@@ -84,7 +101,12 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 Images = null
             };
         }
-
+        
+        /// <summary>
+        /// Retrieves the last messages for a user with his friends/following gyms for unit testing
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetLastMessagesForUser(ActualRequest actualRequest)
         {
             List<int> integers = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
@@ -116,6 +138,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Returns a list with recent messages between 2 given users
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private ActualRequest GetConversationForUsers(ActualRequest actualRequest)
         {
             List<int> integers = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());

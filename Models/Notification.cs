@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a notification for a user
+    /// </summary>
     public class Notification
     {
         public int Id { get; set; }

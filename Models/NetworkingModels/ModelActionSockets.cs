@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing the sockets version of the user action model
+    /// </summary>
     public class ModelActionSockets
     {
         [JsonPropertyName("senderId")]

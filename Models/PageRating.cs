@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a page rating
+    /// </summary>
     public class PageRating
     {
         public int PageId { get; set; }

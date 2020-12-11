@@ -5,10 +5,20 @@ using SkiaSharp;
 
 namespace SEP3_Tier3
 {
+    /// <summary>
+    /// A class with static methods related to working with images
+    /// </summary>
     public class ImagesUtil
     {
         public const string FILE_PATH = "C:/Users/Toni/RiderProjects/Images";
 
+        /// <summary>
+        /// Resizes a given image with the given dimensions
+        /// </summary>
+        /// <param name="initialImage">the initial image</param>
+        /// <param name="width">the new width</param>
+        /// <param name="height">the new height</param>
+        /// <returns>the resized version of the image</returns>
         public static byte[] ResizeImage(byte[] initialImage, int width, int height)
         {
             SKBitmap source = SKBitmap.Decode(initialImage);
@@ -18,6 +28,12 @@ namespace SEP3_Tier3
             return data.ToArray();
         }
 
+        /// <summary>
+        /// Writes a given image to a given file
+        /// </summary>
+        /// <param name="image">the given image</param>
+        /// <param name="path">the file path</param>
+        /// <param name="fileName">the file name</param>
         public static void WriteImageToPath(byte[] image, string path, string fileName)
         {
             using (var ms = new MemoryStream(image))
@@ -38,6 +54,10 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// Deletes a given folder
+        /// </summary>
+        /// <param name="path">the file path</param>
         public static void DeleteUserFolder(string path)
         {
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
@@ -54,6 +74,11 @@ namespace SEP3_Tier3
             }
         }
 
+        /// <summary>
+        /// Deletes a given file
+        /// </summary>
+        /// <param name="path">the file path</param>
+        /// <param name="fileName">the file name</param>
         public static void DeleteFile(string path, string fileName)
         {
             try {

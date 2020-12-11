@@ -8,11 +8,18 @@ using SEP3_Tier3.Repositories;
 
 namespace SEP3_Tier3.SocketControllers.Implementation
 {
+    /// <summary>
+    /// Class for handling admin-related sockets requests
+    /// </summary>
     public class AdminSocket : IAdminSocket
     {
         private IAdminRepo adminRepo;
         private readonly string FILE_PATH;
 
+        /// <summary>
+        /// One-argument constructor initializing the admin repository
+        /// </summary>
+        /// <param name="adminRepo">the given value for the admin repo</param>
         public AdminSocket(IAdminRepo adminRepo)
         {
             this.adminRepo = adminRepo;
@@ -34,6 +41,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             }
         }
 
+        /// <summary>
+        /// Returns the total number of entries of a given model
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetNumber(ActualRequest actualRequest)
         {
             string modelType = actualRequest.Request.Argument.ToString();
@@ -50,6 +62,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Gets a list of the most reported users
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetUsers(ActualRequest actualRequest)
         {
             List<int> paginationInts = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
@@ -78,6 +95,11 @@ namespace SEP3_Tier3.SocketControllers.Implementation
             };
         }
 
+        /// <summary>
+        /// Gets a list of the most reported posts
+        /// </summary>
+        /// <param name="actualRequest">the client request to be handled</param>
+        /// <returns>the response to the given request</returns>
         private async Task<ActualRequest> GetPosts(ActualRequest actualRequest)
         {
             List<int> paginationInts = JsonSerializer.Deserialize<List<int>>(actualRequest.Request.Argument.ToString());
@@ -87,18 +109,6 @@ namespace SEP3_Tier3.SocketControllers.Implementation
                 ActionType = ActionType.ADMIN_GET_POSTS.ToString(),
                 Argument = JsonSerializer.Serialize(postIds)
             };
-            // List<byte[]> postImages = new List<byte[]>();
-            // if (posts != null && posts.Count > 0) {
-            //     foreach (var post in posts) {
-            //         try {
-            //             var readImageFile = File.ReadAllBytes($"{FILE_PATH}/Posts/{post.Id}.jpg");
-            //             postImages.Add(ImagesUtil.ResizeImage(readImageFile, 50, 50));
-            //         }
-            //         catch (Exception e) {
-            //             Console.WriteLine("No image found for post " + post.Id);
-            //         }
-            //     }
-            // }
 
             return new ActualRequest
             {

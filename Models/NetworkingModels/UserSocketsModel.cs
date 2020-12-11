@@ -2,6 +2,9 @@
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a sockets version of the user model
+    /// </summary>
     public class UserSocketsModel
     {
         [JsonPropertyName("id")]

@@ -6,6 +6,9 @@ using System.Text.Json.Serialization;
 
 namespace SEP3_Tier3.Models
 {
+    /// <summary>
+    /// Class for storing a post
+    /// </summary>
     public class Post
     {
         [JsonPropertyName("id")]
