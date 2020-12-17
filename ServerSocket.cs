@@ -47,8 +47,7 @@ namespace SEP3_Tier3
             while (true)
             {
                 TcpClient client = listener.AcceptTcpClient();
-
-                Console.WriteLine("Client connected");
+                
                 new Thread(() => HandleClientRequest(client)).Start();
             }
         }
@@ -63,11 +62,9 @@ namespace SEP3_Tier3
 
             byte[] dataFromClient = new byte[65535];
             int bytesRead = stream.Read(dataFromClient, 0, dataFromClient.Length);
-            Console.WriteLine("Bytes read length " + bytesRead);
             string readFromClientAsJson = Encoding.ASCII.GetString(dataFromClient, 0, bytesRead);
             Request readFromClient = JsonSerializer.Deserialize<Request>(readFromClientAsJson);
-            Console.WriteLine("Request deserialized " + readFromClient.ActionType + readFromClient.Argument);
-            
+
             ActualRequest actualRequest;
             if (readFromClient.ActionType.Equals(ActionType.HAS_IMAGES.ToString()))
             {
@@ -82,33 +79,26 @@ namespace SEP3_Tier3
                 {
                     byte[] temp = new byte[imageSize];
                     byte[] finalImage = new byte[imageSize];
-                    Console.WriteLine("Image size is " + imageSize);
                     int bytesLeftFromImage = imageSize;
                     int imageBytesRead;
                     do
                     {
                         imageBytesRead = stream.Read(temp, 0, bytesLeftFromImage);
-                        Console.WriteLine("Read bytes " + imageBytesRead);
                         int difference = imageSize - bytesLeftFromImage;
-                        Console.WriteLine("Difference is " + difference);
                         bytesLeftFromImage -= imageBytesRead;
-                        Console.WriteLine("Bytes left from image " + bytesLeftFromImage);
                         for (int i = 0; i < imageBytesRead; i++)
                         {
                             finalImage[i + difference] = temp[i];
                         }
                     } while (bytesLeftFromImage > 0);
                     
-                    Console.WriteLine("Image bytes read length " + imageBytesRead);
                     incomingImages.Add(finalImage);
                 }
 
                 dataFromClient = new byte[65535];
                 bytesRead = stream.Read(dataFromClient, 0, dataFromClient.Length);
-                Console.WriteLine("Bytes read length " + bytesRead);
                 readFromClientAsJson = Encoding.ASCII.GetString(dataFromClient, 0, bytesRead);
                 readFromClient = JsonSerializer.Deserialize<Request>(readFromClientAsJson);
-                Console.WriteLine("Request deserialized " + readFromClient.ActionType + readFromClient.Argument);
                 actualRequest = new ActualRequest
                 {
                     Images = incomingImages,
@@ -145,7 +135,6 @@ namespace SEP3_Tier3
 
             if (responseImages != null && responseImages.Any())
             {
-                Console.WriteLine("Sending images " + responseImages.Count);
                 List<int> imageSizes = new List<int>();
                 
                 foreach (var image in responseImages) {
@@ -157,7 +146,6 @@ namespace SEP3_Tier3
                     Argument = imageSizes
                 };
                 string requestForImagesAsJson = JsonSerializer.Serialize(requestForImages);
-                Console.WriteLine("Sending back to client response: " + requestForImagesAsJson);
                 byte[] dataForImages = Encoding.ASCII.GetBytes(requestForImagesAsJson);
                 stream.Write(dataForImages, 0, dataForImages.Length);
                 
@@ -167,8 +155,7 @@ namespace SEP3_Tier3
             }
 
             string requestResponseAsJson = JsonSerializer.Serialize(request);
-
-            Console.WriteLine("Sending back to client response: " + requestResponseAsJson);
+            
             byte[] dataToClient = Encoding.ASCII.GetBytes(requestResponseAsJson);
             stream.Write(dataToClient, 0, dataToClient.Length);
 

@@ -17,10 +17,8 @@ namespace SEP3_Tier3.Repositories.Implementation
     {
         public async Task<int> AddTrainingAsync(TrainingSocketsModelWithOwner training)
         {
-            using (ShapeAppDbContext ctx = new ShapeAppDbContext())
-            {
-                try
-                {
+            using (ShapeAppDbContext ctx = new ShapeAppDbContext()) {
+                try {
                     User owner = await ctx.Users.FirstAsync(u => u.Id == training.Owner.UserId);
                     Training trainingDb = new Training
                     {
@@ -57,11 +55,9 @@ namespace SEP3_Tier3.Repositories.Implementation
                             await ctx.SaveChangesAsync();
                         }
                     }
-
                     return createdTrainingId;
                 }
-                catch (Exception e)
-                {
+                catch (Exception e) {
                     return -1;
                 }
             }

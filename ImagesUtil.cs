@@ -41,7 +41,6 @@ namespace SEP3_Tier3
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
-                    Console.WriteLine("New directory:" + Directory.GetCreationTime(path));
                 }
 
                 using (var fs = new FileStream(path + fileName, FileMode.Create))
@@ -64,13 +63,11 @@ namespace SEP3_Tier3
             foreach (var file in directoryInfo.GetFiles())
             {
                 file.Delete();
-                Console.WriteLine("Deleting file " + file.Name);
             }
 
             if (Directory.Exists(path))
             {
                 Directory.Delete(path);
-                Console.WriteLine("Deleted folder " + path);
             }
         }
 
@@ -85,11 +82,9 @@ namespace SEP3_Tier3
                 DirectoryInfo directoryInfo = new DirectoryInfo(path);
                 foreach (var file in directoryInfo.GetFiles())
                 {
-                    Console.WriteLine("File name is " + file.Name);
                     if (file.Name.Equals(fileName))
                     {
                         file.Delete();
-                        Console.WriteLine("Deleting file " + file.Name);
                     }
                     
                 }
